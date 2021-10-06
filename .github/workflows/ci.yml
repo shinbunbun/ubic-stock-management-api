@@ -40,10 +40,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '10.x'
-      - name: Install Dependencies
-        run: |
-          npm init -y
-          npm install serverless
 
   build:
     needs: setup-go
@@ -59,9 +55,12 @@ jobs:
       - build
     runs-on: ubuntu-latest
     steps:
+      - name: Install Dependencies
+        run: |
+          npm install serverless
       - name: Deploy to Lambda
         run: |
-          npx sls deploy --stage ${{ (github.ref == 'dev' && 'dev') || (github.ref == 'master' && 'prd') }}
+          sls deploy --stage ${{ (github.ref == 'dev' && 'dev') || (github.ref == 'master' && 'prd') }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
