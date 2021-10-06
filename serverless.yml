@@ -24,6 +24,7 @@ provider:
   name: aws
   runtime: go1.x
   lambdaHashingVersion: 20201221
+  region: ap-northeast-1
 
 # you can overwrite defaults here
 #  stage: dev
