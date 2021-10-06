@@ -57,7 +57,7 @@ jobs:
     steps:
       - name: Install Dependencies
         run: |
-          npm install serverless
+          npm install serverless -g
       - name: Deploy to Lambda
         run: |
           sls deploy --stage ${{ (github.ref == 'dev' && 'dev') || (github.ref == 'master' && 'prd') }}
