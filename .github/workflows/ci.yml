@@ -44,7 +44,7 @@ jobs:
         run: make build
         
   deploy:
-    needs: setup
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Lambda
