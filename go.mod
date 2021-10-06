@@ -1,3 +1,5 @@
-module github.com/shinbunbun/ubic-stock-management-api
+module github.com/Yuto/ubic-stock-management-api
 
 go 1.16
+
+require github.com/aws/aws-lambda-go v1.27.0
