@@ -8,17 +8,14 @@ on:
 name: Auto Deploy to AWS Lambda
 
 jobs:
-  setup:
-    name: setup
+
+  setup-go:
+    name: setup-go
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@master
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '10.x'
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
@@ -31,12 +28,24 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
+
+  setup-node:
+    name: setup-node
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
       - name: Install Dependencies
         run: |
           npm install serverless -g
 
   build:
-    needs: setup
+    needs: setup-go
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -44,7 +53,9 @@ jobs:
         run: make build
         
   deploy:
-    needs: build
+    needs: 
+      - setup-node
+      - build
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Lambda
