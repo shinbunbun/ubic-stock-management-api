@@ -27,10 +27,7 @@ jobs:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
-            ${{ runner.os }}-go-      
-      - name: Install Dependencies
-        run: |
-          npm install serverless -g
+            ${{ runner.os }}-go- 
 
   setup-node:
     name: setup-node
@@ -42,7 +39,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '10.x'
+          node-version: '10.x'     
+      - name: Install Dependencies
+        run: |
+          npm install serverless -g
 
   build:
     needs: setup-go
