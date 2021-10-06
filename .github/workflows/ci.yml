@@ -39,10 +39,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '10.x'     
-      - name: Install Dependencies
-        run: |
-          npm install serverless -g
+          node-version: '10.x'
 
   build:
     needs: setup-go
@@ -59,7 +56,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
+      - name: Install Dependencies
+        run: |
+          npm install serverless -g
       - name: Deploy to Lambda
         run: |
           sls deploy --stage ${{ (github.ref == 'dev' && 'dev') || (github.ref == 'master' && 'prd') }}
