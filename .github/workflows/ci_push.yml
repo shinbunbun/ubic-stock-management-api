@@ -1,9 +1,5 @@
 on:
-  pull_request:
-    branches:
-      - master
-      - dev
-    types: [opened, edited, ready_for_review, reopened]
+  push:
 
 name: CI/CD (PR open)
 
