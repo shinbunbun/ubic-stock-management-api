@@ -73,44 +73,44 @@ functions:
     handler: bin/stock-management-system
     events:
       - httpApi:
-        path: /stock
-        method: get
+          path: /stock
+          method: get
       - httpApi:
-        path: /stock
-        method: put
+          path: /stock
+          method: put
       - httpApi:
-        path: /stock
-        method: delete
+          path: /stock
+          method: delete
       - httpApi:
-        path: /stock
-        method: post
+          path: /stock
+          method: post
       - httpApi:
-        path: /transaction
-        method: post
+          path: /transaction
+          method: post
       - httpApi:
-        path: /transaction
-        method: delete
+          path: /transaction
+          method: delete
       - httpApi:
-        path: /transaction
-        method: get
+          path: /transaction
+          method: get
       - httpApi:
-        path: /user
-        method: delete
+          path: /user
+          method: delete
       - httpApi:
-        path: /user
-        method: get
+          path: /user
+          method: get
       - httpApi:
-        path: /user
-        method: put
+          path: /user
+          method: put
       - httpApi:
-        path: /register
-        method: post
+          path: /register
+          method: post
       - httpApi:
-        path: /user_verify
-        method: get
+          path: /user_verify
+          method: get
       - httpApi:
-        path: /login
-        method: post
+          path: /login
+          method: post
       
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
