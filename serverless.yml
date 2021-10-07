@@ -25,6 +25,7 @@ provider:
   runtime: go1.x
   lambdaHashingVersion: 20201221
   region: ap-northeast-1
+  stage: ${opt:stage}
 
 # you can overwrite defaults here
 #  stage: dev
