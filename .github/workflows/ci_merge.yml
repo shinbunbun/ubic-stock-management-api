@@ -5,7 +5,7 @@ on:
       - dev
     types: [closed]
 
-name: Auto Deploy to AWS Lambda
+name: CI/CD (PR merge)
 
 jobs:
 
@@ -41,31 +41,12 @@ jobs:
         with:
           node-version: '10.x'
 
-  go-test:
-    needs: setup-go
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: test
-        run: go test ./... -v
-
-  go-lint:
-    needs: setup-go
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.29
-        
   deploy:
     needs: 
       - setup-node
       - setup-go
-      - go-test
-      - go-lint
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v2
 
