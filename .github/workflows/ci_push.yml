@@ -1,7 +1,7 @@
 on:
   push:
 
-name: CI/CD (PR open)
+name: CI/CD (Push)
 
 jobs:
 
