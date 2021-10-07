@@ -3,7 +3,7 @@ on:
     branches:
       - master
       - dev
-    types: [opened]
+    types: [opened, edited, ready_for_review, reopened]
 
 name: CI/CD (PR open)
 
