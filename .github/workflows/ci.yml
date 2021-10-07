@@ -48,14 +48,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: build
         run: make build
+
+      - name: Cache node_modules
+        id: node_modules_cache_id
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+
       - name: Install Dependencies
+        if: steps.node_modules_cache_id.outputs.cache-hit != 'true'
         run: |
-          npm install serverless -g
+          npm ci
+
       - name: Deploy to Lambda
         run: |
-          sls deploy --stage ${{ (github.ref == 'dev' && 'dev') || (github.ref == 'master' && 'prd') }}
+          npx sls deploy --stage ${{ (github.ref == 'dev' && 'dev') || (github.ref == 'master' && 'prd') }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

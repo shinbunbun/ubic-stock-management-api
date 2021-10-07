@@ -1,0 +1,23 @@
+{
+  "name": "ubic-stock-management-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shinbunbun/ubic-stock-management-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shinbunbun/ubic-stock-management-api/issues"
+  },
+  "homepage": "https://github.com/shinbunbun/ubic-stock-management-api#readme",
+  "dependencies": {
+    "serverless": "^2.61.0"
+  }
+}
