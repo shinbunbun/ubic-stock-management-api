@@ -40,11 +40,31 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '10.x'
+
+  go-test:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: test
+        run: go test ./... -v
+
+  go-lint:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
         
   deploy:
     needs: 
       - setup-node
       - setup-go
+      - go-test
+      - go-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
