@@ -74,23 +74,34 @@ functions:
     events:
       - httpApi:
         path: /stock
-        method: 
-          - get
-          - put
-          - delete
-          - post
+        method: get
+      - httpApi:
+        path: /stock
+        method: put
+      - httpApi:
+        path: /stock
+        method: delete
+      - httpApi:
+        path: /stock
+        method: post
       - httpApi:
         path: /transaction
-        method: 
-          - post
-          - delete
-          - get
+        method: post
+      - httpApi:
+        path: /transaction
+        method: delete
+      - httpApi:
+        path: /transaction
+        method: get
       - httpApi:
         path: /user
-        method: 
-          - delete
-          - get
-          - put
+        method: delete
+      - httpApi:
+        path: /user
+        method: get
+      - httpApi:
+        path: /user
+        method: put
       - httpApi:
         path: /register
         method: post
