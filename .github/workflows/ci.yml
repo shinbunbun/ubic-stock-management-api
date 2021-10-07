@@ -42,7 +42,7 @@ jobs:
           node-version: '10.x'
 
   go-test:
-    needs: setup
+    needs: setup-go
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -50,7 +50,7 @@ jobs:
         run: go test ./... -v
 
   go-lint:
-    needs: setup
+    needs: setup-go
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
