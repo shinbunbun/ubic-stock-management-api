@@ -26,6 +26,17 @@ provider:
   lambdaHashingVersion: 20201221
   region: ap-northeast-1
   stage: ${opt:stage}
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - 'dynamodb:*'
+          Resource:
+            - ${self:custom.environment.DYNAMO_DB}
+
+custom:
+  environment: ${file(./env.yml)
 
 # you can overwrite defaults here
 #  stage: dev
