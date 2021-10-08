@@ -25,6 +25,18 @@ provider:
   runtime: go1.x
   lambdaHashingVersion: 20201221
   region: ap-northeast-1
+  stage: ${opt:stage}
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - 'dynamodb:*'
+          Resource:
+            - ${self:custom.environment.DYNAMO_DB}
+
+custom:
+  environment: ${file(./env.yml)}
 
 # you can overwrite defaults here
 #  stage: dev
@@ -68,6 +80,49 @@ functions:
       - httpApi:
           path: /world
           method: get
+  stock-management-system:
+    handler: bin/stock-management-system
+    events:
+      - httpApi:
+          path: /stock
+          method: get
+      - httpApi:
+          path: /stock
+          method: put
+      - httpApi:
+          path: /stock
+          method: delete
+      - httpApi:
+          path: /stock
+          method: post
+      - httpApi:
+          path: /transaction
+          method: post
+      - httpApi:
+          path: /transaction
+          method: delete
+      - httpApi:
+          path: /transaction
+          method: get
+      - httpApi:
+          path: /user
+          method: delete
+      - httpApi:
+          path: /user
+          method: get
+      - httpApi:
+          path: /user
+          method: put
+      - httpApi:
+          path: /register
+          method: post
+      - httpApi:
+          path: /user_verify
+          method: get
+      - httpApi:
+          path: /login
+          method: post
+      
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

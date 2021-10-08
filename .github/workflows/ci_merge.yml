@@ -1,0 +1,74 @@
+on:
+  pull_request:
+    branches:
+      - master
+      - dev
+    types: [closed]
+
+name: CI/CD (PR merge)
+
+jobs:
+
+  setup-go:
+    name: setup-go
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.13
+        id: go
+      - name: Cache
+        uses: actions/cache@v2.1.0
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go- 
+
+  setup-node:
+    name: setup-node
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+
+  deploy:
+    needs: 
+      - setup-node
+      - setup-go
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: build
+        run: make build
+
+      - name: Cache node_modules
+        id: node_modules_cache_id
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/package-lock.json')) }}
+
+      - name: Install Dependencies
+        if: steps.node_modules_cache_id.outputs.cache-hit != 'true'
+        run: |
+          npm ci
+
+      - name: Deploy to Lambda
+        run: |
+          npx sls deploy --stage ${{ (github.ref == 'dev' && 'dev') || (github.ref == 'master' && 'prd') }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DYNAMO_DB: ${{ secrets.DYNAMO_DB }} 
