@@ -36,7 +36,7 @@ provider:
             - ${self:custom.environment.DYNAMO_DB}
 
 custom:
-  environment: ${file(./env.yml)
+  environment: ${file(./env.yml)}
 
 # you can overwrite defaults here
 #  stage: dev
