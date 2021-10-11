@@ -35,11 +35,10 @@ func (it *Interactor) DeleteUserByID(id string) error {
 	case UserNotFoundError:
 		return CantDeleteUserError
 	case nil:
-		it.UserRepository.Delete(id)
+		return it.UserRepository.Delete(id)
 	default:
 		return err
 	}
-	return nil
 }
 
 func (it *Interactor) CreateUser(email string, name string, password string) (string, error) {
