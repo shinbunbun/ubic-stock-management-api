@@ -1,6 +1,8 @@
 package database
 
 import (
+	"errors"
+
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/config"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/google/uuid"
@@ -51,14 +53,22 @@ func (h *DynamoDBHandler) AddItems(widgets []Widget) (string, error) {
 	id := uuidObj.String()
 
 	table := h.conn.Table(config.DataTable())
+	var items []interface{}
 
-	for _, w := range widgets {
-		w.ID = id
-		err := table.Put(w).Run()
-		if err != nil {
-			return "", err
-		}
+	for i := range widgets {
+		widgets[i].ID = id
+		items = append(items, widgets[i])
 	}
+
+	n, err := table.Batch().
+		Write().
+		Put(items...).
+		Run()
+
+	if n != len(widgets) {
+		return "", errors.New("Failed to write")
+	}
+
 	return id, nil
 }
 
