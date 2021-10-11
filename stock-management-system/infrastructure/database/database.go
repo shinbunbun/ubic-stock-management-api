@@ -65,6 +65,10 @@ func (h *DynamoDBHandler) AddItems(widgets []Widget) (string, error) {
 		Put(items...).
 		Run()
 
+	if err != nil {
+		return "", err
+	}
+
 	if n != len(widgets) {
 		return "", errors.New("Failed to write")
 	}
