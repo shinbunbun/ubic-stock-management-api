@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# テスト用のテーブルの制作
 aws dynamodb create-table \
     --table-name UBIC-FOOD-test \
     --attribute-definitions \
@@ -16,4 +17,5 @@ aws dynamodb create-table \
     --region ap-northeast-1 \
     --endpoint-url http://localhost:8000
 
+# データが正しく挿入できるか確認
 aws dynamodb put-item --table-name UBIC-FOOD-test --item '{"ID": {"S":"1"},"DataType": {"S":"2"},"Data": {"S":"3"},"DataKind": {"S":"1"},"IntData": {"N":"1"}}' --region ap-northeast-1 --endpoint-url http://localhost:8000
