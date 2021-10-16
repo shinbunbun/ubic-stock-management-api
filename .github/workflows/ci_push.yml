@@ -33,8 +33,14 @@ jobs:
         run: docker-compose up -d
       - name: setup dynamodb
         run: bash setup-database.sh
+        env:
+          AWS_ACCESS_KEY_ID: hoge
+          AWS_SECRET_ACCESS_KEY: hoge
       - name: test
         run: go test ./... -v
+        env:
+          AWS_ACCESS_KEY_ID: hoge
+          AWS_SECRET_ACCESS_KEY: hoge
 
   go-lint:
     needs: setup-go
