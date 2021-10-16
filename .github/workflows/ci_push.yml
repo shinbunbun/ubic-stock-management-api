@@ -29,6 +29,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: setup docker
+        run: docker-compose up -d
+      - name: setup dynamodb
+        run: bash setup-database.sh
       - name: test
         run: go test ./... -v
 
