@@ -3,39 +3,15 @@ package database
 import (
 	"errors"
 
-	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/config"
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/google/uuid"
 	"github.com/guregu/dynamo"
 )
 
-type DynamoDBHandler struct {
-	conn *dynamo.DB
+type UbicFoodHandler struct {
+	table *dynamo.Table
 }
 
-type DataBaseError string
-
-func (d DataBaseError) Error() string {
-	return string(d)
-}
-
-const (
-	NotFoundError DataBaseError = DataBaseError("Failed to Get Item Because there are no correspond item")
-)
-
-func NewDynamoDBHandler() *DynamoDBHandler {
-	// DynamoDBHandlerを生成して返します
-	sess := GetDynamoDBSession()
-	conn := dynamo.New(sess, &aws.Config{
-		Region:   aws.String(config.AWSRegion()),
-		Endpoint: aws.String(config.DynamoDBEndpoint()),
-	})
-	return &DynamoDBHandler{
-		conn: conn,
-	}
-}
-
-type Widget struct {
+type UbicFoodWidget struct {
 	ID       string `dynamo:"ID,hash"`
 	DataType string `dynamo:"DataType" index:"Data-DataType-index,range"`
 	Data     string `dynamo:"Data" index:"Data-DataType-index,hash"`
@@ -43,7 +19,7 @@ type Widget struct {
 	IntData  int    `dynamo:"IntData"`
 }
 
-func (h *DynamoDBHandler) AddItem(w Widget) (string, error) {
+func (h *UbicFoodHandler) AddItem(w UbicFoodWidget) (string, error) {
 	// ID欄をユニークな値に変えてデータを追加します
 	uuidObj, err := uuid.NewUUID()
 	if err != nil {
@@ -52,7 +28,7 @@ func (h *DynamoDBHandler) AddItem(w Widget) (string, error) {
 	id := uuidObj.String()
 	w.ID = id
 
-	table := h.conn.Table(config.DataTable())
+	table := h.table
 
 	err = table.Put(w).Run()
 
@@ -62,7 +38,7 @@ func (h *DynamoDBHandler) AddItem(w Widget) (string, error) {
 	return id, nil
 }
 
-func (h *DynamoDBHandler) AddItems(widgets []Widget) (string, error) {
+func (h *UbicFoodHandler) AddItems(widgets []UbicFoodWidget) (string, error) {
 	// ID欄を同じユニークな値に変えてデータを追加します
 	uuidObj, err := uuid.NewUUID()
 	if err != nil {
@@ -70,7 +46,7 @@ func (h *DynamoDBHandler) AddItems(widgets []Widget) (string, error) {
 	}
 	id := uuidObj.String()
 
-	table := h.conn.Table(config.DataTable())
+	table := h.table
 	var items []interface{}
 
 	for i := range widgets {
@@ -94,28 +70,28 @@ func (h *DynamoDBHandler) AddItems(widgets []Widget) (string, error) {
 	return id, nil
 }
 
-func (h *DynamoDBHandler) GetByID(id string) ([]Widget, error) {
+func (h *UbicFoodHandler) GetByID(id string) ([]UbicFoodWidget, error) {
 	// IDの値から一致するデータのリストを返します
-	table := h.conn.Table(config.DataTable())
+	table := h.table
 
-	var res []Widget
+	var res []UbicFoodWidget
 	err := table.Get("ID", id).All(&res)
 	if err != nil {
-		return []Widget{}, err
+		return []UbicFoodWidget{}, err
 	}
 	return res, nil
 }
 
-func (h *DynamoDBHandler) DeleteByID(id string) error {
+func (h *UbicFoodHandler) DeleteByID(id string) error {
 	// 同じIDを持つデータを消去します
-	table := h.conn.Table(config.DataTable())
+	table := h.table
 
 	return table.Delete("ID", id).Run()
 }
 
-func (h *DynamoDBHandler) GetByDataAndDataType(data string, datatype string) (UbicFoodWidget, error) {
+func (h *UbicFoodHandler) GetByDataAndDataType(data string, datatype string) (UbicFoodWidget, error) {
 	// DataとDataTypeの値から探して単一の要素を返します
-	table := h.conn.Table(config.DataTable())
+	table := h.table
 
 	var res UbicFoodWidget
 	err := table.Get("Data", data).
@@ -132,11 +108,11 @@ func (h *DynamoDBHandler) GetByDataAndDataType(data string, datatype string) (Ub
 	return res, nil
 }
 
-func (h *DynamoDBHandler) GetByData(data string) ([]Widget, error) {
+func (h *UbicFoodHandler) GetByData(data string) ([]UbicFoodWidget, error) {
 	// Dataの値が一致するデータのリストを返します
-	table := h.conn.Table(config.DataTable())
+	table := h.table
 
-	var res []Widget
+	var res []UbicFoodWidget
 	err := table.Get("Data", data).
 		Index("Data-DataType-index").
 		All(&res)
@@ -146,11 +122,11 @@ func (h *DynamoDBHandler) GetByData(data string) ([]Widget, error) {
 	return res, nil
 }
 
-func (h *DynamoDBHandler) GetByDataKind(dataKind string) ([]Widget, error) {
+func (h *UbicFoodHandler) GetByDataKind(dataKind string) ([]UbicFoodWidget, error) {
 	// DataKindが一致するデータを返します
-	table := h.conn.Table(config.DataTable())
+	table := h.table
 
-	var res []Widget
+	var res []UbicFoodWidget
 	err := table.Get("DataKind", dataKind).
 		Index("DataKind-index").
 		All(&res)
@@ -158,11 +134,4 @@ func (h *DynamoDBHandler) GetByDataKind(dataKind string) ([]Widget, error) {
 		return nil, err
 	}
 	return res, nil
-}
-
-func (h *DynamoDBHandler) NewUbicFoodHandler() *UbicFoodHandler {
-	table := h.conn.Table(config.DataTable())
-	return &UbicFoodHandler{
-		table: &table,
-	}
 }
