@@ -16,11 +16,11 @@ const (
 )
 
 type UserRepository struct {
-	DynamoDBHandler database.DynamoDBHandler
+	UbicFoodHandler database.UbicFoodHandler
 }
 
 func (ur *UserRepository) FindByID(id string) (domain.User, error) {
-	userDatas, err := ur.DynamoDBHandler.GetByID(id)
+	userDatas, err := ur.UbicFoodHandler.GetByID(id)
 	if err != nil {
 		return domain.User{}, err
 	}
@@ -44,7 +44,7 @@ func (ur *UserRepository) FindByID(id string) (domain.User, error) {
 }
 
 func (ur *UserRepository) FindByEmail(email string) (domain.User, error) {
-	w, err := ur.DynamoDBHandler.GetByDataAndDataType(email, "user-email")
+	w, err := ur.UbicFoodHandler.GetByDataAndDataType(email, "user-email")
 	if err != nil {
 		return domain.User{}, err
 	}
@@ -55,7 +55,7 @@ func (ur *UserRepository) Create(email string, name string, password string) (st
 	if _, err := ur.FindByEmail(email); err != nil {
 		return "", AlreadyExistsErr
 	}
-	widgets := []database.Widget{
+	widgets := []database.UbicFoodWidget{
 		{
 			Data:     email,
 			DataType: "user-email",
@@ -72,9 +72,9 @@ func (ur *UserRepository) Create(email string, name string, password string) (st
 			DataKind: "user",
 		},
 	}
-	return ur.DynamoDBHandler.AddItems(widgets)
+	return ur.UbicFoodHandler.AddItems(widgets)
 }
 
 func (ur *UserRepository) Delete(id string) error {
-	return ur.DynamoDBHandler.DeleteByID(id)
+	return ur.UbicFoodHandler.DeleteByID(id)
 }
