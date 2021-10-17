@@ -8,9 +8,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/ses"
 )
 
-func SendMail(message, recipient, subject string) error {
+func SendMail(message, recipient, subject string, isTest bool) error {
 
-	svc := NewSESHandler()
+	svc := NewSESHandler(isTest)
 
 	input := &ses.SendEmailInput{
 		Destination: &ses.Destination{
