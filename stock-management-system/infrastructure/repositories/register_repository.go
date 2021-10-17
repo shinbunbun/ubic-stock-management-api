@@ -12,6 +12,9 @@ func (r *RegisterRepository) AddCodeToDB(email string) error {
 		Data:     email,
 		DataKind: "code",
 	}
-	r.UbicFoodHandler.AddItem(widget)
+	_, err := r.UbicFoodHandler.AddItem(widget)
+	if err != nil {
+		return err
+	}
 	return nil
 }
