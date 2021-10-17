@@ -8,7 +8,7 @@ import (
 
 func NewSESHandler(isTest bool) (*ses.SES, error) {
 	config := &aws.Config{
-		Region: aws.String("ap-northeast-1"),
+		Region: aws.String("us-east-1"),
 	}
 	if isTest {
 		config.Endpoint = aws.String("http://localhost:4579")
