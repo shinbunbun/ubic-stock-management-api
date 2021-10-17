@@ -1,5 +1,5 @@
 # 設計
-![hackmdで書いた設計](https://github.com/shinbunbun/ubic-stock-management-api/issues/44)
+![hackmdで書いた設計](https://hackmd.io/Rtdli98GSKmfWD4d_DxbNA)
 
 # 利用するソフト
  - docker-compose
