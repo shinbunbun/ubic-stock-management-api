@@ -1,16 +1,22 @@
 package mail
 
 import (
-	"os"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/ses"
 )
 
-func SendMail(message, recipient, subject string, isTest bool) error {
+func SendMail(message, recipient, subject, sender string, isTest bool) error {
 
-	svc := NewSESHandler(isTest)
+	svc, err := NewSESHandler(isTest)
+	if err != nil {
+		return err
+	}
+
+	_, err = svc.VerifyEmailAddress(&ses.VerifyEmailAddressInput{EmailAddress: aws.String(recipient)})
+	if checkAwsError(err) != nil {
+		return err
+	}
 
 	input := &ses.SendEmailInput{
 		Destination: &ses.Destination{
@@ -31,11 +37,14 @@ func SendMail(message, recipient, subject string, isTest bool) error {
 				Data:    aws.String(subject),
 			},
 		},
-		Source: aws.String(os.Getenv("MAIL_SENDER")),
+		Source: aws.String(sender),
 	}
 
-	_, err := svc.SendEmail(input)
+	_, err = svc.SendEmail(input)
+	return checkAwsError(err)
+}
 
+func checkAwsError(err error) error {
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
 			return aerr

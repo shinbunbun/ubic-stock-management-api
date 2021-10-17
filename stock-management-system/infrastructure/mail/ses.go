@@ -6,15 +6,18 @@ import (
 	"github.com/aws/aws-sdk-go/service/ses"
 )
 
-func NewSESHandler(isTest bool) *ses.SES {
+func NewSESHandler(isTest bool) (*ses.SES, error) {
 	config := &aws.Config{
 		Region: aws.String("ap-northeast-1"),
 	}
 	if isTest {
 		config.Endpoint = aws.String("http://localhost:4579")
 	}
-	sess, _ := session.NewSession(config)
+	sess, err := session.NewSession(config)
 
 	svc := ses.New(sess)
-	return svc
+	if err != nil {
+		return svc, err
+	}
+	return svc, nil
 }
