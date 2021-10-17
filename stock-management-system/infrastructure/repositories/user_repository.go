@@ -72,7 +72,7 @@ func (ur *UserRepository) Create(email string, name string, password string) (st
 			DataKind: "user",
 		},
 	}
-	return ur.UbicFoodHandler.AddItems(widgets)
+	return ur.UbicFoodHandler.AddMultipleItems(widgets)
 }
 
 func (ur *UserRepository) Delete(id string) error {

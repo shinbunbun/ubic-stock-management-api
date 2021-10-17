@@ -38,7 +38,7 @@ func (h *UbicFoodHandler) AddItem(w UbicFoodWidget) (string, error) {
 	return id, nil
 }
 
-func (h *UbicFoodHandler) AddItems(widgets []UbicFoodWidget) (string, error) {
+func (h *UbicFoodHandler) AddMultipleItems(widgets []UbicFoodWidget) (string, error) {
 	// ID欄を同じユニークな値に変えてデータを追加します
 	uuidObj, err := uuid.NewUUID()
 	if err != nil {
