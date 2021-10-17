@@ -4,3 +4,10 @@ services:
     image: amazon/dynamodb-local
     ports:
       - 8000:8000
+  localstack:
+    image: localstack/localstack
+    ports:
+      - 4579:4579
+    environment:
+      - SERVICES=ses
+      - DEFAULT_REGION=us-east-1
