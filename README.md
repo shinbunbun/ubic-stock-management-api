@@ -4,9 +4,9 @@
 # 利用するソフト
  - docker-compose
   - dynamodbをローカルで立てるために使用
- - ![aws cli](https://aws.amazon.com/jp/cli/)
+ - [aws cli](https://aws.amazon.com/jp/cli/)
   - dynamodbをローカルでテストするために使用
- - ![golangci-lint](https://github.com/golangci/golangci-lint)
+ - [golangci-lint](https://github.com/golangci/golangci-lint)
   - github actionsのバリデーションで使うので，push前に手元で通ることを確認したほうが良いです。
 
 
