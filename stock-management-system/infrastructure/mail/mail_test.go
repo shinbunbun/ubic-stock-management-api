@@ -1,6 +1,6 @@
-/* package mail
+package mail
 
-import (
+/* import (
 	"testing"
 )
 
@@ -34,5 +34,4 @@ func TestSendMail(t *testing.T) {
 			}
 		})
 	}
-}
-*/
+} */
