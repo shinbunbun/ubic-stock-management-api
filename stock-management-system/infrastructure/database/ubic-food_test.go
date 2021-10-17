@@ -16,13 +16,13 @@ func TestAddItem(t *testing.T) {
 	}
 	t.Run("Add Data", func(t *testing.T) {
 		id, err := h.AddItem(w)
-		CheckError(t, err, nil)
-		CheckDatabase(t, h, id, w)
+		checkError(t, err, nil)
+		checkDatabase(t, h, id, w)
 	})
 	t.Run("Add Second Time", func(t *testing.T) {
 		id, err := h.AddItem(w)
-		CheckError(t, err, nil)
-		CheckDatabase(t, h, id, w)
+		checkError(t, err, nil)
+		checkDatabase(t, h, id, w)
 	})
 }
 
@@ -41,16 +41,16 @@ func TestGetByDataAndDataType(t *testing.T) {
 		IntData:  0,
 	}
 	_, err := h.AddItem(w)
-	CheckError(t, err, nil)
+	checkError(t, err, nil)
 
 	t.Run("Succesful Get", func(t *testing.T) {
 		got, err := h.GetByDataAndDataType(data, dataType)
-		CheckError(t, err, nil)
-		CheckWidget(t, got, w)
+		checkError(t, err, nil)
+		checkWidget(t, got, w)
 	})
 	t.Run("Failed to Get", func(t *testing.T) {
 		_, err := h.GetByDataAndDataType(data, dataType+"1")
-		CheckError(t, err, NotFoundError)
+		checkError(t, err, NotFoundError)
 	})
 }
 
@@ -77,22 +77,22 @@ func TestGetByData(t *testing.T) {
 	}
 
 	_, err := h.AddItem(w1)
-	CheckError(t, err, nil)
+	checkError(t, err, nil)
 	_, err = h.AddItem(w1)
-	CheckError(t, err, nil)
+	checkError(t, err, nil)
 	_, err = h.AddItem(w2)
-	CheckError(t, err, nil)
+	checkError(t, err, nil)
 
 	t.Run("Successful get 2 item", func(t *testing.T) {
 		ws, err := h.GetByData(data1)
-		CheckError(t, err, nil)
+		checkError(t, err, nil)
 		if len(ws) != 2 {
 			t.Fatalf("Invalid Data length")
 		}
 	})
 	t.Run("Successful get 1 item", func(t *testing.T) {
 		ws, err := h.GetByData(data2)
-		CheckError(t, err, nil)
+		checkError(t, err, nil)
 		if len(ws) != 1 {
 			t.Fatalf("Invalid Data length")
 		}
@@ -122,40 +122,40 @@ func TestGetByKind(t *testing.T) {
 	}
 
 	_, err := h.AddItem(w1)
-	CheckError(t, err, nil)
+	checkError(t, err, nil)
 	_, err = h.AddItem(w1)
-	CheckError(t, err, nil)
+	checkError(t, err, nil)
 	_, err = h.AddItem(w2)
-	CheckError(t, err, nil)
+	checkError(t, err, nil)
 
 	t.Run("Successful get 2 item", func(t *testing.T) {
 		ws, err := h.GetByDataKind(kind1)
-		CheckError(t, err, nil)
+		checkError(t, err, nil)
 		if len(ws) != 2 {
 			t.Fatalf("Invalid Data length")
 		}
 	})
 	t.Run("Successful get 1 item", func(t *testing.T) {
 		ws, err := h.GetByDataKind(kind2)
-		CheckError(t, err, nil)
+		checkError(t, err, nil)
 		if len(ws) != 1 {
 			t.Fatalf("Invalid Data length")
 		}
 	})
 }
 
-func CheckDatabase(t testing.TB, h *UbicFoodHandler, id string, want UbicFoodWidget) {
+func checkDatabase(t testing.TB, h *UbicFoodHandler, id string, want UbicFoodWidget) {
 	// IDの値がidであるデータがwantであるかを判定。複数データがある時はエラー
 	t.Helper()
 	w, err := h.GetByID(id)
-	CheckError(t, err, nil)
+	checkError(t, err, nil)
 	if len(w) != 1 {
 		t.Fatalf("want to get a single widgets by id")
 	}
-	CheckWidget(t, w[0], want)
+	checkWidget(t, w[0], want)
 }
 
-func CheckWidget(t testing.TB, got, want UbicFoodWidget) {
+func checkWidget(t testing.TB, got, want UbicFoodWidget) {
 	// ID欄を除いて同じかを判定
 	t.Helper()
 	got.ID = "0"
@@ -165,7 +165,7 @@ func CheckWidget(t testing.TB, got, want UbicFoodWidget) {
 	}
 }
 
-func CheckError(t testing.TB, got, want error) {
+func checkError(t testing.TB, got, want error) {
 	t.Helper()
 	if want != nil && got != nil {
 		if want.Error() != got.Error() {
@@ -194,12 +194,12 @@ func newDummyHandler() *UbicFoodHandler {
 		}
 	}
 
-	dummyHandler.CleanAllItems()
+	dummyHandler.cleanAllItems()
 
 	return dummyHandler
 }
 
-func (h *UbicFoodHandler) CleanAllItems() {
+func (h *UbicFoodHandler) cleanAllItems() {
 
 	table := dummyHandler.table
 
