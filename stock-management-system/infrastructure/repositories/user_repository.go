@@ -16,7 +16,7 @@ const (
 )
 
 type UserRepository struct {
-	UbicFoodHandler database.UbicFoodHandler
+	UbicFoodHandler *database.UbicFoodHandler
 }
 
 func (ur *UserRepository) FindByID(id string) (domain.User, error) {
