@@ -2,6 +2,8 @@ package database
 
 import (
 	"testing"
+
+	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/config"
 )
 
 func TestAddItem(t *testing.T) {
@@ -188,7 +190,7 @@ var (
 func newDummyHandler() *UbicFoodHandler {
 	if dummyHandler == nil {
 		h := NewDynamoDBHandler()
-		table := h.conn.Table("UBIC-FOOD-test")
+		table := h.conn.Table(config.DataTableTest())
 		dummyHandler = &UbicFoodHandler{
 			table: &table,
 		}

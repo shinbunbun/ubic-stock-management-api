@@ -12,6 +12,10 @@ func DataTable() string {
 	return "UBIC-FOOD"
 }
 
+func DataTableTest() string {
+	return "UBIC-FOOD-test"
+}
+
 func DynamoDBEndpoint() string {
 	// DynamoDBのエンドポイントを指す文字列を返します
 	str := os.Getenv("DYNAMO_DB")

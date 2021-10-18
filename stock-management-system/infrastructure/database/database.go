@@ -33,7 +33,11 @@ func NewDynamoDBHandler() *DynamoDBHandler {
 }
 
 func (h *DynamoDBHandler) NewUbicFoodHandler() *UbicFoodHandler {
-	table := h.conn.Table(config.DataTable())
+	return h.NewUbicFoodHandlerWithTableName(config.DataTable())
+}
+
+func (h *DynamoDBHandler) NewUbicFoodHandlerWithTableName(tableName string) *UbicFoodHandler {
+	table := h.conn.Table(tableName)
 	return &UbicFoodHandler{
 		table: &table,
 	}
