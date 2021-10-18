@@ -18,7 +18,7 @@ func init() {
 	controller = controllers.NewController(db)
 }
 
-func router(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func Router(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	url := request.Path
 	method := request.HTTPMethod
 	query := request.QueryStringParameters
