@@ -24,6 +24,16 @@ func NewController(db *database.DynamoDBHandler) *Controller {
 	}
 }
 
+func NewControllerWithTableName(db *database.DynamoDBHandler, tableName string) *Controller {
+	return &Controller{
+		Interactor: &usecase.Interactor{
+			UserRepository: &repositories.UserRepository{
+				UbicFoodHandler: db.NewUbicFoodHandlerWithTableName(tableName),
+			},
+		},
+	}
+}
+
 func (c *Controller) FindUserByID(id string) (string, error) {
 	user, err := c.Interactor.FindUserByID(id)
 	if err != nil {
