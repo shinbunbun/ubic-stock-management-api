@@ -13,20 +13,20 @@ var (
 )
 
 type response events.APIGatewayProxyResponse
+type event events.APIGatewayProxyRequest
 
 func init() {
 	db := database.NewDynamoDBHandler()
 	controller = controllers.NewController(db)
 }
 
-func Router(request events.APIGatewayProxyRequest) (response, error) {
+func Router(request event) (response, error) {
 	url := request.Path
 	method := request.HTTPMethod
-	query := request.QueryStringParameters
 	routes := []struct {
 		url      string
 		method   string
-		function func(map[string]string) (response, error)
+		function func(event) (response, error)
 	}{
 		{
 			"/user",
@@ -37,7 +37,7 @@ func Router(request events.APIGatewayProxyRequest) (response, error) {
 
 	for _, route := range routes {
 		if route.url == url && route.method == method {
-			return route.function(query)
+			return route.function(request)
 		}
 	}
 
@@ -46,7 +46,8 @@ func Router(request events.APIGatewayProxyRequest) (response, error) {
 	}, errors.New("Invalid request error")
 }
 
-func findUserByID(query map[string]string) (response, error) {
+func findUserByID(request event) (response, error) {
+	query := request.QueryStringParameters
 	id, ok := query["id"]
 	if !ok {
 		return response{
