@@ -3,8 +3,11 @@ package router
 import (
 	"errors"
 
+	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/config"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/controllers"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/database"
+	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/mail"
+	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/repositories"
 	"github.com/aws/aws-lambda-go/events"
 )
 
@@ -32,6 +35,11 @@ func Router(request event) (response, error) {
 			"/user",
 			"GET",
 			findUserByID,
+		},
+		{
+			"/register",
+			"GET",
+			register,
 		},
 	}
 
@@ -62,6 +70,43 @@ func findUserByID(request event) (response, error) {
 	}
 	return response{
 		Body:       body,
+		StatusCode: 200,
+	}, nil
+}
+
+func register(request event) (response, error) {
+	query := request.QueryStringParameters
+	email, ok := query["email"]
+	if !ok {
+		return response{
+			StatusCode: 400,
+		}, nil
+	}
+
+	registerRepository := &repositories.RegisterRepository{
+		UbicFoodHandler: *database.NewDynamoDBHandler().NewUbicFoodHandler(),
+	}
+	code, err := registerRepository.AddCodeToDB(email)
+	if err != nil {
+		return response{
+			StatusCode: 500,
+			Body:       "Failed to register email address",
+		}, err
+	}
+
+	message := "以下のリンクへアクセスしてUBIC在庫管理システムへの登録を完了してください。\nhttps://urvuod6a7j.execute-api.ap-northeast-1.amazonaws.com/complete-register?code=" + code
+	subject := "UBIC在庫管理システム登録確認メール"
+	sender := config.SenderEmailAddress()
+	err = mail.SendMail(message, email, subject, sender, false)
+	if err != nil {
+		return response{
+			StatusCode: 500,
+			Body:       "Failed to send email",
+		}, err
+	}
+
+	return response{
+		Body:       "",
 		StatusCode: 200,
 	}, nil
 }
