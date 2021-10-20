@@ -6,15 +6,15 @@ type RegisterRepository struct {
 	UbicFoodHandler database.UbicFoodHandler
 }
 
-func (r *RegisterRepository) AddCodeToDB(email string) error {
+func (r *RegisterRepository) AddCodeToDB(email string) (string, error) {
 	widget := database.UbicFoodWidget{
 		DataType: "code-email",
 		Data:     email,
 		DataKind: "code",
 	}
-	_, err := r.UbicFoodHandler.AddItem(widget)
+	code, err := r.UbicFoodHandler.AddItem(widget)
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	return code, nil
 }

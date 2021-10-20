@@ -24,3 +24,7 @@ func DynamoDBEndpoint() string {
 	}
 	return "http://localhost:8000"
 }
+
+func SenderEmailAddress() string {
+	return os.Getenv("SENDER_EMAIL_ADDRESS")
+}
