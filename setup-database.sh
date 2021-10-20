@@ -9,7 +9,7 @@ aws dynamodb create-table \
         AttributeName=Data,AttributeType=S \
         AttributeName=DataKind,AttributeType=S \
     --key-schema \
-        AttributeName=ID,KeyType=HASH \
+        AttributeName=ID,KeyType=HASH AttributeName=DataType,KeyType=RANGE \
     --global-secondary-indexes \
         IndexName=Data-DataType-index,KeySchema=[{'AttributeName=Data,KeyType=HASH'},{'AttributeName=DataType,KeyType=RANGE'}],ProvisionedThroughput='{ReadCapacityUnits=1,WriteCapacityUnits=1}',Projection={ProjectionType=ALL} \
         IndexName=DataKind-index,KeySchema=[{'AttributeName=DataKind,KeyType=HASH'}],ProvisionedThroughput='{ReadCapacityUnits=1,WriteCapacityUnits=1}',Projection={ProjectionType=ALL} \
