@@ -83,6 +83,13 @@ func register(request event) (response, error) {
 		}, nil
 	}
 
+	if !mail.ValidEmailAddress(email) {
+		return response{
+			StatusCode: 400,
+			Body:       "invalid email address",
+		}, nil
+	}
+
 	registerRepository := &repositories.RegisterRepository{
 		UbicFoodHandler: *database.NewDynamoDBHandler().NewUbicFoodHandler(),
 	}

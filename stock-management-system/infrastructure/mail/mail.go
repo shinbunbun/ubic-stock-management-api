@@ -1,6 +1,8 @@
 package mail
 
 import (
+	"strings"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/ses"
@@ -42,6 +44,10 @@ func SendMail(message, recipient, subject, sender string, isTest bool) error {
 
 	_, err = svc.SendEmail(input)
 	return checkAwsError(err)
+}
+
+func ValidEmailAddress(email string) bool {
+	return strings.HasSuffix(email, "@u-aizu.ac.jp")
 }
 
 func checkAwsError(err error) error {
