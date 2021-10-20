@@ -71,7 +71,7 @@ func (h *UbicFoodHandler) AddMultipleItems(widgets []UbicFoodWidget) (string, er
 }
 
 func (h *UbicFoodHandler) ReplaceItems(id string, widgets []UbicFoodWidget) error {
-	// IDのデータを消去して，widgetsで置き換えます
+	// IDに対応するデータをwidgetsで置き換えます
 
 	table := h.table
 	var items []interface{}
