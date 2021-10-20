@@ -70,6 +70,30 @@ func (h *UbicFoodHandler) AddMultipleItems(widgets []UbicFoodWidget) (string, er
 	return id, nil
 }
 
+func (h *UbicFoodHandler) UpdateData(id, dataType, data string) error {
+	table := h.table
+	return table.Update("ID", id).
+		Range("DataType", dataType).
+		Set("Data", data).
+		Run()
+}
+
+func (h *UbicFoodHandler) UpdateIntDataTo(id, dataType string, data int) error {
+	table := h.table
+	return table.Update("ID", id).
+		Range("DataType", dataType).
+		Set("IntData", data).
+		Run()
+}
+
+func (h *UbicFoodHandler) UpdateIntDataBy(id, dataType string, data int) error {
+	table := h.table
+	return table.Update("ID", id).
+		Range("DataType", dataType).
+		Add("IntData", data).
+		Run()
+}
+
 func (h *UbicFoodHandler) ReplaceItems(id string, widgets []UbicFoodWidget) error {
 	// IDに対応するデータをwidgetsで置き換えます
 
