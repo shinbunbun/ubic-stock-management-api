@@ -115,7 +115,7 @@ functions:
           method: put
       - httpApi:
           path: /register
-          method: post
+          method: get
       - httpApi:
           path: /user_verify
           method: get
