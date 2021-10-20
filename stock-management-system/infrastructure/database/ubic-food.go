@@ -64,10 +64,37 @@ func (h *UbicFoodHandler) AddMultipleItems(widgets []UbicFoodWidget) (string, er
 	}
 
 	if n != len(widgets) {
-		return "", errors.New("Failed to write")
+		return "", errors.New("Failed to write All item")
 	}
 
 	return id, nil
+}
+
+func (h *UbicFoodHandler) UpdateData(id, dataType, data string) error {
+	// id,dataTypeに対応する行のDataをdataに変えます
+	table := h.table
+	return table.Update("ID", id).
+		Range("DataType", dataType).
+		Set("Data", data).
+		Run()
+}
+
+func (h *UbicFoodHandler) UpdateIntDataTo(id, dataType string, data int) error {
+	// id,dataTypeに対応する行のintDataをdataに変えます
+	table := h.table
+	return table.Update("ID", id).
+		Range("DataType", dataType).
+		Set("IntData", data).
+		Run()
+}
+
+func (h *UbicFoodHandler) UpdateIntDataBy(id, dataType string, add int) error {
+	// id,dataTypeに対応する行のintDataをaddだけ加算します
+	table := h.table
+	return table.Update("ID", id).
+		Range("DataType", dataType).
+		Add("IntData", add).
+		Run()
 }
 
 func (h *UbicFoodHandler) GetByID(id string) ([]UbicFoodWidget, error) {
@@ -86,7 +113,24 @@ func (h *UbicFoodHandler) DeleteByID(id string) error {
 	// 同じIDを持つデータを消去します
 	table := h.table
 
-	return table.Delete("ID", id).Run()
+	ws, err := h.GetByID(id)
+	if err != nil {
+		return err
+	}
+	var keys []dynamo.Keyed
+	for _, w := range ws {
+		keys = append(keys, dynamo.Keys{w.ID, w.DataType})
+	}
+	n, err := table.Batch("ID", "DataType").
+		Write().
+		Delete(keys...).Run()
+	if n != len(ws) {
+		return errors.New("Failed all items")
+	}
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (h *UbicFoodHandler) GetByDataAndDataType(data string, datatype string) (UbicFoodWidget, error) {

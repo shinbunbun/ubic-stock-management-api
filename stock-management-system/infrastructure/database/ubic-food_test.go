@@ -223,3 +223,60 @@ func (h *UbicFoodHandler) cleanAllItems() {
 		}
 	}
 }
+
+func TestUpdateFunctinos(t *testing.T) {
+	dataType := "type"
+	dataKind := "kind"
+	initialData := ""
+	initialIntData := 10
+	w := UbicFoodWidget{
+		DataType: dataType,
+		DataKind: dataKind,
+		Data:     initialData,
+		IntData:  initialIntData,
+	}
+	var h *UbicFoodHandler
+	initTable := func() string {
+		h = newDummyHandler()
+		id, err := h.AddItem(w)
+		checkError(t, err, nil)
+		return id
+	}
+
+	t.Run("Test Update Data", func(t *testing.T) {
+		id := initTable()
+		data := "updatedData"
+		err := h.UpdateData(id, dataType, data)
+		checkError(t, err, nil)
+		checkDatabase(t, h, id, UbicFoodWidget{
+			DataType: dataType,
+			DataKind: dataKind,
+			Data:     data,
+			IntData:  initialIntData,
+		})
+	})
+	t.Run("Test Update IntData To 100", func(t *testing.T) {
+		id := initTable()
+		intData := 100
+		err := h.UpdateIntDataTo(id, dataType, intData)
+		checkError(t, err, nil)
+		checkDatabase(t, h, id, UbicFoodWidget{
+			DataType: dataType,
+			DataKind: dataKind,
+			Data:     initialData,
+			IntData:  intData,
+		})
+	})
+	t.Run("Test Update IntData By 100", func(t *testing.T) {
+		id := initTable()
+		intData := 100
+		err := h.UpdateIntDataBy(id, dataType, intData)
+		checkError(t, err, nil)
+		checkDatabase(t, h, id, UbicFoodWidget{
+			DataType: dataType,
+			DataKind: dataKind,
+			Data:     initialData,
+			IntData:  initialIntData + intData,
+		})
+	})
+}
