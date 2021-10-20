@@ -26,5 +26,5 @@ func DynamoDBEndpoint() string {
 }
 
 func SenderEmailAddress() string {
-	return os.Getenv("SENDER_EMAIL_ADDRESS")
+	return os.Getenv("MAIL_SENDER")
 }
