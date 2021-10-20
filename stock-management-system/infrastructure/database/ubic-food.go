@@ -94,57 +94,6 @@ func (h *UbicFoodHandler) UpdateIntDataBy(id, dataType string, data int) error {
 		Run()
 }
 
-func (h *UbicFoodHandler) ReplaceItems(id string, widgets []UbicFoodWidget) error {
-	// IDに対応するデータをwidgetsで置き換えます
-
-	table := h.table
-	var items []interface{}
-	var deleteKeys []dynamo.Keyed
-
-	{
-		deletes, err := h.GetByID(id)
-		if err != nil {
-			return err
-		}
-		for _, w := range deletes {
-			deleteKeys = append(deleteKeys, dynamo.Keys{w.ID, w.DataType})
-		}
-	}
-
-	for i := range widgets {
-		widgets[i].ID = id
-		items = append(items, widgets[i])
-	}
-
-	n, err := table.Batch("ID", "DataType").
-		Write().
-		Delete(deleteKeys...).
-		Run()
-
-	if err != nil {
-		return err
-	}
-
-	if n != len(deleteKeys) {
-		return errors.New("Failed to write")
-	}
-
-	n, err = table.Batch("ID", "DataType").
-		Write().
-		Put(items...).
-		Run()
-
-	if err != nil {
-		return err
-	}
-
-	if n != len(widgets) {
-		return errors.New("Failed to write")
-	}
-
-	return nil
-}
-
 func (h *UbicFoodHandler) GetByID(id string) ([]UbicFoodWidget, error) {
 	// IDの値から一致するデータのリストを返します
 	table := h.table
