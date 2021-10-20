@@ -71,6 +71,7 @@ func (h *UbicFoodHandler) AddMultipleItems(widgets []UbicFoodWidget) (string, er
 }
 
 func (h *UbicFoodHandler) UpdateData(id, dataType, data string) error {
+	// id,dataTypeに対応する行のDataをdataに変えます
 	table := h.table
 	return table.Update("ID", id).
 		Range("DataType", dataType).
@@ -79,6 +80,7 @@ func (h *UbicFoodHandler) UpdateData(id, dataType, data string) error {
 }
 
 func (h *UbicFoodHandler) UpdateIntDataTo(id, dataType string, data int) error {
+	// id,dataTypeに対応する行のintDataをdataに変えます
 	table := h.table
 	return table.Update("ID", id).
 		Range("DataType", dataType).
@@ -86,11 +88,12 @@ func (h *UbicFoodHandler) UpdateIntDataTo(id, dataType string, data int) error {
 		Run()
 }
 
-func (h *UbicFoodHandler) UpdateIntDataBy(id, dataType string, data int) error {
+func (h *UbicFoodHandler) UpdateIntDataBy(id, dataType string, add int) error {
+	// id,dataTypeに対応する行のintDataをaddだけ加算します
 	table := h.table
 	return table.Update("ID", id).
 		Range("DataType", dataType).
-		Add("IntData", data).
+		Add("IntData", add).
 		Run()
 }
 
