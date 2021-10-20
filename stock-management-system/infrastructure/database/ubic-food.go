@@ -64,10 +64,61 @@ func (h *UbicFoodHandler) AddMultipleItems(widgets []UbicFoodWidget) (string, er
 	}
 
 	if n != len(widgets) {
-		return "", errors.New("Failed to write")
+		return "", errors.New("Failed to write All item")
 	}
 
 	return id, nil
+}
+
+func (h *UbicFoodHandler) ReplaceItems(id string, widgets []UbicFoodWidget) error {
+	// IDのデータを消去して，widgetsで置き換えます
+
+	table := h.table
+	var items []interface{}
+	var deleteKeys []dynamo.Keyed
+
+	{
+		deletes, err := h.GetByID(id)
+		if err != nil {
+			return err
+		}
+		for _, w := range deletes {
+			deleteKeys = append(deleteKeys, dynamo.Keys{w.ID, w.DataType})
+		}
+	}
+
+	for i := range widgets {
+		widgets[i].ID = id
+		items = append(items, widgets[i])
+	}
+
+	n, err := table.Batch("ID", "DataType").
+		Write().
+		Delete(deleteKeys...).
+		Run()
+
+	if err != nil {
+		return err
+	}
+
+	if n != len(deleteKeys) {
+		return errors.New("Failed to write")
+	}
+
+	n, err = table.Batch("ID", "DataType").
+		Write().
+		Put(items...).
+		Run()
+
+	if err != nil {
+		return err
+	}
+
+	if n != len(widgets) {
+		return errors.New("Failed to write")
+	}
+
+	return nil
 }
 
 func (h *UbicFoodHandler) GetByID(id string) ([]UbicFoodWidget, error) {
@@ -86,7 +137,24 @@ func (h *UbicFoodHandler) DeleteByID(id string) error {
 	// 同じIDを持つデータを消去します
 	table := h.table
 
-	return table.Delete("ID", id).Run()
+	ws, err := h.GetByID(id)
+	if err != nil {
+		return err
+	}
+	var keys []dynamo.Keyed
+	for _, w := range ws {
+		keys = append(keys, dynamo.Keys{w.ID, w.DataType})
+	}
+	n, err := table.Batch("ID", "DataType").
+		Write().
+		Delete(keys...).Run()
+	if n != len(ws) {
+		return errors.New("Failed all items")
+	}
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (h *UbicFoodHandler) GetByDataAndDataType(data string, datatype string) (UbicFoodWidget, error) {
