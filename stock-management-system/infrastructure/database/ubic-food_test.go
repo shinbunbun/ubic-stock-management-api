@@ -28,6 +28,48 @@ func TestAddItem(t *testing.T) {
 	})
 }
 
+func TestGetByIDAndDataType(t *testing.T) {
+	h := newDummyHandler()
+
+	w1 := UbicFoodWidget{
+		DataType: "type1",
+		Data:     "data",
+		DataKind: "kind",
+		IntData:  1,
+	}
+	w2 := UbicFoodWidget{
+		DataType: "type2",
+		Data:     "data",
+		DataKind: "kind",
+		IntData:  3,
+	}
+	ws := []UbicFoodWidget{
+		w1, w2,
+	}
+
+	id, err := h.AddMultipleItems(ws)
+	checkError(t, err, nil)
+
+	t.Run("Successful Get 1", func(t *testing.T) {
+		got, err := h.GetByIDAndDataType(id, "type1")
+		checkError(t, err, nil)
+		checkWidget(t, got, w1)
+	})
+	t.Run("Successful Get 2", func(t *testing.T) {
+		got, err := h.GetByIDAndDataType(id, "type2")
+		checkError(t, err, nil)
+		checkWidget(t, got, w2)
+	})
+	t.Run("Failed to 1", func(t *testing.T) {
+		_, err := h.GetByIDAndDataType(id, "type3")
+		checkError(t, err, NotFoundError)
+	})
+	t.Run("Failed to 2", func(t *testing.T) {
+		_, err := h.GetByIDAndDataType(id+"!!!", "type2")
+		checkError(t, err, NotFoundError)
+	})
+}
+
 func TestGetByDataAndDataType(t *testing.T) {
 	// GetByDataAndDataType関数のテスト
 	h := newDummyHandler()
