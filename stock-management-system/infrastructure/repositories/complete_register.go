@@ -35,6 +35,11 @@ func (r *CompleteRepository) DeleteCode(code string) error {
 	return nil
 }
 
-/* func (r *CompleteRepository) RegisterUser(email) (string, error) {
-
-} */
+func (r *CompleteRepository) RegisterUser(email string) (string, error) {
+	widget := database.UbicFoodWidget{
+		DataType: "user-email",
+		Data:     email,
+		DataKind: "user",
+	}
+	return r.UbicFoodHandler.AddItem(widget)
+}
