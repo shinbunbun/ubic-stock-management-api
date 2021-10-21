@@ -67,6 +67,11 @@ func findUserByID(request event) (response, error) {
 			StatusCode: 500,
 		}, err
 	}
+	if err == repositories.UserNotFoundErr {
+		return response{
+			StatusCode: 404,
+		}, err
+	}
 	return response{
 		Body:       body,
 		StatusCode: 200,

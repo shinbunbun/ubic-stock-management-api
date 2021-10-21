@@ -13,6 +13,7 @@ func (e RepositoryError) Error() string {
 
 const (
 	AlreadyExistsErr = RepositoryError("Can't make user because the email was already used")
+	UserNotFoundErr  = RepositoryError("There are no corresond user")
 )
 
 type UserRepository struct {
@@ -23,6 +24,9 @@ func (ur *UserRepository) FindByID(id string) (domain.User, error) {
 	userDatas, err := ur.UbicFoodHandler.GetByID(id)
 	if err != nil {
 		return domain.User{}, err
+	}
+	if len(userDatas) < 3 {
+		return domain.User{}, UserNotFoundErr
 	}
 	res := domain.User{ID: id}
 
