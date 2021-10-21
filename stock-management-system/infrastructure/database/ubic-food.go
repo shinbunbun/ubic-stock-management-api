@@ -26,16 +26,20 @@ func (h *UbicFoodHandler) AddItem(w UbicFoodWidget) (string, error) {
 		return "", err
 	}
 	id := uuidObj.String()
+	return h.AddItemWithID(id, w)
+}
+
+func (h *UbicFoodHandler) AddItemWithID(id string, w UbicFoodWidget) (string, error) {
+	// データを追加します
+	table := h.table
 	w.ID = id
 
-	table := h.table
-
-	err = table.Put(w).Run()
+	err := table.Put(w).Run()
 
 	if err != nil {
 		return "", err
 	}
-	return id, nil
+	return w.ID, nil
 }
 
 func (h *UbicFoodHandler) AddMultipleItems(widgets []UbicFoodWidget) (string, error) {
@@ -45,10 +49,12 @@ func (h *UbicFoodHandler) AddMultipleItems(widgets []UbicFoodWidget) (string, er
 		return "", err
 	}
 	id := uuidObj.String()
+	return h.AddMultipleItemsWithID(id, widgets)
+}
 
+func (h *UbicFoodHandler) AddMultipleItemsWithID(id string, widgets []UbicFoodWidget) (string, error) {
 	table := h.table
 	var items []interface{}
-
 	for i := range widgets {
 		widgets[i].ID = id
 		items = append(items, widgets[i])
@@ -58,7 +64,6 @@ func (h *UbicFoodHandler) AddMultipleItems(widgets []UbicFoodWidget) (string, er
 		Write().
 		Put(items...).
 		Run()
-
 	if err != nil {
 		return "", err
 	}
