@@ -114,7 +114,7 @@ func register(request event) (response, error) {
 		}, err
 	}
 
-	message := "以下のリンクへアクセスしてUBIC在庫管理システムへの登録を完了してください。\nhttps://urvuod6a7j.execute-api.ap-northeast-1.amazonaws.com/complete-register?code=" + code
+	message := "以下のリンクへアクセスしてUBIC在庫管理システムへの登録を完了してください。\n" + config.GetEndpointURL() + "/complete-register?code=" + code
 	subject := "UBIC在庫管理システム登録確認メール"
 	sender := config.SenderEmailAddress()
 	fmt.Println(message, email, subject, sender, false)
