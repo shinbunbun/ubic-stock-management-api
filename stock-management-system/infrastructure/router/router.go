@@ -1,6 +1,8 @@
 package router
 
 import (
+	"fmt"
+
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/config"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/controllers"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/database"
@@ -42,6 +44,7 @@ func Router(request event) (response, error) {
 	}
 
 	for _, route := range routes {
+		fmt.Println(route.url, url, route.method, method)
 		if route.url == url && route.method == method {
 			return route.function(request)
 		}
