@@ -8,6 +8,7 @@ import (
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/database"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/mail"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/repositories"
+	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/token"
 	"github.com/aws/aws-lambda-go/events"
 )
 
@@ -40,6 +41,11 @@ func Router(request event) (response, error) {
 			"/register",
 			"GET",
 			register,
+		},
+		{
+			"/complete-register",
+			"GET",
+			completeRegister,
 		},
 	}
 	for _, route := range routes {
@@ -90,8 +96,6 @@ func register(request event) (response, error) {
 		}, nil
 	}
 
-	fmt.Println(email)
-
 	if !mail.ValidEmailAddress(email) {
 		return response{
 			StatusCode: 400,
@@ -124,6 +128,56 @@ func register(request event) (response, error) {
 
 	return response{
 		Body:       "",
+		StatusCode: 200,
+	}, nil
+}
+
+func completeRegister(request event) (response, error) {
+	query := request.QueryStringParameters
+	code, ok := query["code"]
+	if !ok {
+		return response{
+			StatusCode: 400,
+		}, nil
+	}
+
+	completeRepository := repositories.CompleteRepository{
+		UbicFoodHandler: *database.NewDynamoDBHandler().NewUbicFoodHandler(),
+	}
+	email, err := completeRepository.CheckCode(code)
+	if err != nil {
+		return response{
+			StatusCode: 400,
+			Body:       "Invalid code",
+		}, nil
+	}
+
+	id, err := completeRepository.RegisterUser(email)
+	if err != nil {
+		return response{
+			StatusCode: 500,
+			Body:       "Failed to register user",
+		}, nil
+	}
+
+	err = completeRepository.DeleteCode(code)
+	if err != nil {
+		return response{
+			StatusCode: 500,
+			Body:       "Failed to delete temporary code",
+		}, nil
+	}
+
+	token, err := token.GenerateToken(id, email)
+	if err != nil {
+		return response{
+			StatusCode: 500,
+			Body:       "Failed to generate token",
+		}, nil
+	}
+
+	return response{
+		Body:       token,
 		StatusCode: 200,
 	}, nil
 }
