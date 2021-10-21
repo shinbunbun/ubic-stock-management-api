@@ -5,17 +5,6 @@ import (
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/database"
 )
 
-type RepositoryError string
-
-func (e RepositoryError) Error() string {
-	return string(e)
-}
-
-const (
-	AlreadyExistsErr = RepositoryError("Can't make user because the email was already used")
-	UserNotFoundErr  = RepositoryError("There are no corresond user")
-)
-
 type UserRepository struct {
 	UbicFoodHandler *database.UbicFoodHandler
 }
