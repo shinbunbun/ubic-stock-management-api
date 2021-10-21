@@ -22,11 +22,21 @@ const (
 
 func NewDynamoDBHandler() *DynamoDBHandler {
 	// DynamoDBHandlerを生成して返します
+	return NewDynamoDBHandlerWithEndpoint("")
+}
+
+func NewDynamoDBHandlerWithEndpoint(endpoint string) *DynamoDBHandler {
 	sess := GetDynamoDBSession()
-	conn := dynamo.New(sess, &aws.Config{
-		Region: aws.String(config.AWSRegion()),
-		/* Endpoint: aws.String(config.DynamoDBEndpoint()), */
-	})
+
+	cfg := &aws.Config{}
+	if region := config.AWSRegion(); region != "" {
+		cfg.Region = aws.String(region)
+	}
+	if endpoint != "" {
+		cfg.Endpoint = aws.String(endpoint)
+	}
+
+	conn := dynamo.New(sess, cfg)
 	return &DynamoDBHandler{
 		conn: conn,
 	}
