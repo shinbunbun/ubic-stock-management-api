@@ -189,7 +189,7 @@ var (
 
 func newDummyHandler() *UbicFoodHandler {
 	if dummyHandler == nil {
-		h := NewDynamoDBHandler()
+		h := NewDynamoDBHandlerWithEndpoint(config.DynamoDBEndpoint())
 		table := h.conn.Table(config.DataTableTest())
 		dummyHandler = &UbicFoodHandler{
 			table: &table,
