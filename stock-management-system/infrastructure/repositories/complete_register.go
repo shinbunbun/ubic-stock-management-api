@@ -17,7 +17,7 @@ func (r *CompleteRepository) CheckCode(code string) (string, error) {
 	}
 	email := ""
 	for i := 0; i < len(widgetArr); i++ {
-		if widgetArr[i].DataKind == "code-email" {
+		if widgetArr[i].DataType == "code-email" {
 			email = widgetArr[i].Data
 		}
 	}
