@@ -103,10 +103,10 @@ func register(request event) (response, error) {
 		}, nil
 	}
 
-	registerRepository := &repositories.RegisterRepository{
+	codeRepository := &repositories.CodeRepository{
 		UbicFoodHandler: *database.NewDynamoDBHandler().NewUbicFoodHandler(),
 	}
-	code, err := registerRepository.AddCodeToDB(email)
+	code, err := codeRepository.AddCodeToDB(email)
 	if err != nil {
 		return response{
 			StatusCode: 500,

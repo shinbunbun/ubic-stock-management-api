@@ -2,11 +2,11 @@ package repositories
 
 import "github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/database"
 
-type RegisterRepository struct {
+type CodeRepository struct {
 	UbicFoodHandler database.UbicFoodHandler
 }
 
-func (r *RegisterRepository) AddCodeToDB(email string) (string, error) {
+func (r *CodeRepository) AddCodeToDB(email string) (string, error) {
 	widget := database.UbicFoodWidget{
 		DataType: "code-email",
 		Data:     email,
