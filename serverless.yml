@@ -129,7 +129,7 @@ functions:
           method: get
       - http:
           path: /login
-          method: post
+          method: get
     environment: ${self:custom.environment} 
       
 #    The following are a few example events you can configure
