@@ -14,26 +14,7 @@ func (ur *UserRepository) FindByID(id string) (domain.User, error) {
 	if err != nil {
 		return domain.User{}, err
 	}
-	if len(userDatas) < 3 {
-		return domain.User{}, UserNotFoundErr
-	}
-	res := domain.User{ID: id}
-
-	for _, data := range userDatas {
-		if data.DataKind != "user" {
-			continue
-		}
-		switch data.DataType {
-		case "user-email":
-			res.Email = data.Data
-		case "user-name":
-			res.Name = data.Data
-		case "user-password":
-			res.Password = data.Data
-		}
-	}
-
-	return res, nil
+	return newUser(userDatas)
 }
 
 func (ur *UserRepository) FindByEmail(email string) (domain.User, error) {
@@ -70,4 +51,32 @@ func (ur *UserRepository) Create(email string, name string, password string) (st
 
 func (ur *UserRepository) Delete(id string) error {
 	return ur.UbicFoodHandler.DeleteByID(id)
+}
+
+func newUser(widgets []database.UbicFoodWidget) (domain.User, error) {
+	res := domain.User{}
+	id := ""
+	for _, data := range widgets {
+		if data.DataKind != "user" {
+			continue
+		}
+		if id == "" {
+			id = data.ID
+		} else if id != data.ID {
+			return domain.User{}, UserNotFoundErr
+		}
+		switch data.DataType {
+		case "user-email":
+			res.Email = data.Data
+		case "user-name":
+			res.Name = data.Data
+		case "user-password":
+			res.Password = data.Data
+		}
+	}
+	if id == "" {
+		return domain.User{}, UserNotFoundErr
+	}
+	res.ID = id
+	return res, nil
 }
