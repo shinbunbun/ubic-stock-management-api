@@ -72,3 +72,4 @@ Temporary Items
 bin
 .serverless
 node_modules
+.envrc.swp

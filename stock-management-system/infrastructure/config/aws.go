@@ -28,3 +28,7 @@ func DynamoDBEndpoint() string {
 func SenderEmailAddress() string {
 	return os.Getenv("MAIL_SENDER")
 }
+
+func SignatureKey() string {
+	return os.Getenv("SIGNINGKEY")
+}
