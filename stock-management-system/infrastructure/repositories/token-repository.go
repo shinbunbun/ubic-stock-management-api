@@ -43,3 +43,12 @@ func (r *CompleteRepository) RegisterUser(email string) (string, error) {
 	}
 	return r.UbicFoodHandler.AddItem(widget)
 }
+
+func (r *CompleteRepository) IsUserRegistered(email string) (string, bool) {
+	widget, err := r.UbicFoodHandler.GetByDataAndDataType(email, "user-email")
+	if err != nil {
+		return "", false
+	} else {
+		return widget.ID, true
+	}
+}
