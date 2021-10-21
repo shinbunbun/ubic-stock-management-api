@@ -43,9 +43,9 @@ func Router(request event) (response, error) {
 			register,
 		},
 		{
-			"/complete-register",
+			"/token",
 			"GET",
-			completeRegister,
+			tokenEndPoint,
 		},
 		{
 			"/login",
@@ -137,7 +137,7 @@ func register(request event) (response, error) {
 	}, nil
 }
 
-func completeRegister(request event) (response, error) {
+func tokenEndPoint(request event) (response, error) {
 	query := request.QueryStringParameters
 	code, ok := query["code"]
 	if !ok {
@@ -157,20 +157,23 @@ func completeRegister(request event) (response, error) {
 		}, nil
 	}
 
-	id, err := completeRepository.RegisterUser(email)
-	if err != nil {
-		return response{
-			StatusCode: 500,
-			Body:       "Failed to register user: " + err.Error(),
-		}, nil
-	}
+	id, isRegistered := completeRepository.IsUserRegistered(email)
+	if !isRegistered {
+		id, err = completeRepository.RegisterUser(email)
+		if err != nil {
+			return response{
+				StatusCode: 500,
+				Body:       "Failed to register user: " + err.Error(),
+			}, nil
+		}
 
-	err = completeRepository.DeleteCode(code)
-	if err != nil {
-		return response{
-			StatusCode: 500,
-			Body:       "Failed to delete temporary code: " + err.Error(),
-		}, nil
+		err = completeRepository.DeleteCode(code)
+		if err != nil {
+			return response{
+				StatusCode: 500,
+				Body:       "Failed to delete temporary code: " + err.Error(),
+			}, nil
+		}
 	}
 
 	token, err := token.GenerateToken(id, email)
