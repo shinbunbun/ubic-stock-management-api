@@ -1,7 +1,6 @@
 package router
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/config"
@@ -24,8 +23,8 @@ func init() {
 	controller = controllers.NewController(db)
 }
 
-func Router(ctx context.Context /* request event */) (response, error) {
-	/* url := request.Path
+func Router(request event) (response, error) {
+	url := request.Path
 	method := request.HTTPMethod
 	routes := []struct {
 		url      string
@@ -42,13 +41,13 @@ func Router(ctx context.Context /* request event */) (response, error) {
 			"GET",
 			register,
 		},
-	} */
-	fmt.Printf("%#v", ctx)
-	/* for _, route := range routes {
+	}
+	fmt.Printf("%#v\n", request)
+	for _, route := range routes {
 		if route.url == url && route.method == method {
 			return route.function(request)
 		}
-	} */
+	}
 
 	return response{
 		StatusCode: 400,

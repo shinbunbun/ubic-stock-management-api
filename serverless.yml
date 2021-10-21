@@ -83,43 +83,43 @@ functions:
   stock-management-system:
     handler: bin/stock-management-system
     events:
-      - httpApi:
+      - http:
           path: /stock
           method: get
-      - httpApi:
+      - http:
           path: /stock
           method: put
-      - httpApi:
+      - http:
           path: /stock
           method: delete
-      - httpApi:
+      - http:
           path: /stock
           method: post
-      - httpApi:
+      - http:
           path: /transaction
           method: post
-      - httpApi:
+      - http:
           path: /transaction
           method: delete
-      - httpApi:
+      - http:
           path: /transaction
           method: get
-      - httpApi:
+      - http:
           path: /user
           method: delete
-      - httpApi:
+      - http:
           path: /user
           method: get
-      - httpApi:
+      - http:
           path: /user
           method: put
-      - httpApi:
+      - http:
           path: /register
           method: get
-      - httpApi:
+      - http:
           path: /user_verify
           method: get
-      - httpApi:
+      - http:
           path: /login
           method: post
       
