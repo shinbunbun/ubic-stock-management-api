@@ -1,8 +1,6 @@
 package router
 
 import (
-	"errors"
-
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/config"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/controllers"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/database"
@@ -51,7 +49,7 @@ func Router(request event) (response, error) {
 
 	return response{
 		StatusCode: 400,
-	}, errors.New("Invalid request error")
+	}, nil
 }
 
 func findUserByID(request event) (response, error) {
