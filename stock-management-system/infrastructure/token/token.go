@@ -1,13 +1,15 @@
 package token
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/config"
 
-	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/form3tech-oss/jwt-go"
 )
+
+var prvKey []byte = []byte(config.SignatureKey())
 
 func GenerateToken(id, email string) (string, error) {
 
@@ -24,13 +26,18 @@ func GenerateToken(id, email string) (string, error) {
 	claims["role"] = "user"
 
 	// 電子署名
-	return token.SignedString([]byte(config.SignatureKey()))
+	return token.SignedString(prvKey)
 }
 
-// JwtMiddleware check token
-var JwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
-	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-		return []byte(config.SignatureKey()), nil
-	},
-	SigningMethod: jwt.SigningMethodHS256,
-})
+func VerifyToken(tokenString string) error {
+	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return prvKey, nil
+	})
+	return err
+}
