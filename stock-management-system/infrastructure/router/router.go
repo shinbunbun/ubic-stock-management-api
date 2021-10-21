@@ -1,6 +1,8 @@
 package router
 
 import (
+	"fmt"
+
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/config"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/controllers"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/database"
@@ -79,6 +81,8 @@ func register(request event) (response, error) {
 			StatusCode: 400,
 		}, nil
 	}
+
+	fmt.Println(email)
 
 	if !mail.ValidEmailAddress(email) {
 		return response{
