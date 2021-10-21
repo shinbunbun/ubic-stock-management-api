@@ -42,7 +42,7 @@ func Router(request event) (response, error) {
 			register,
 		},
 	}
-	fmt.Printf("%v", request)
+	fmt.Printf("%#v", request)
 	for _, route := range routes {
 		if route.url == url && route.method == method {
 			return route.function(request)
