@@ -41,7 +41,7 @@ provider:
             - '*'
           Condition:
             StringEquals:
-              ses:FromAddress: self:custom.environment.MAIL_SENDER
+              ses:FromAddress: ${self:custom.environment.MAIL_SENDER}
 
 custom:
   environment: ${file(./env.yml)}
