@@ -1,5 +1,7 @@
 package mail
 
+import "testing"
+
 /* import (
 	"testing"
 )
@@ -35,3 +37,36 @@ func TestSendMail(t *testing.T) {
 		})
 	}
 } */
+
+func TestValidEmailAddress(t *testing.T) {
+	type args struct {
+		email string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "success case",
+			args: args{
+				email: "test@u-aizu.ac.jp",
+			},
+			want: true,
+		},
+		{
+			name: "failed case",
+			args: args{
+				email: "test@gmail.com",
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ValidEmailAddress(tt.args.email); got != tt.want {
+				t.Errorf("ValidEmailAddress() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
