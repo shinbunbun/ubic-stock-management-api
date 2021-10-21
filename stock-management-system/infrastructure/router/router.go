@@ -67,7 +67,7 @@ func findUserByID(request event) (response, error) {
 	case repositories.UserNotFoundErr:
 		return response{
 			StatusCode: 404,
-		}, err
+		}, nil
 	case nil:
 	case err:
 		return response{
