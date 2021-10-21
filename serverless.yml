@@ -125,7 +125,7 @@ functions:
           path: /register
           method: get
       - http:
-          path: /register-complete
+          path: /complete-register
           method: get
       - http:
           path: /login
