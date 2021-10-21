@@ -114,7 +114,7 @@ func register(request event) (response, error) {
 		}, err
 	}
 
-	message := "以下のリンクへアクセスしてUBIC在庫管理システムへの登録を完了してください。\n" + config.GetEndpointURL() + "/complete-register?code=" + code
+	message := "以下のリンクへアクセスしてUBIC在庫管理システムへの登録を完了してください。\n" + config.GetEndpointURL() + "/dev/complete-register?code=" + code
 	subject := "UBIC在庫管理システム登録確認メール"
 	sender := config.SenderEmailAddress()
 	fmt.Println(message, email, subject, sender, false)
@@ -148,7 +148,7 @@ func completeRegister(request event) (response, error) {
 	if err != nil {
 		return response{
 			StatusCode: 400,
-			Body:       "Invalid code",
+			Body:       "Invalid code: " + err.Error(),
 		}, nil
 	}
 
@@ -156,7 +156,7 @@ func completeRegister(request event) (response, error) {
 	if err != nil {
 		return response{
 			StatusCode: 500,
-			Body:       "Failed to register user",
+			Body:       "Failed to register user: " + err.Error(),
 		}, nil
 	}
 
@@ -164,7 +164,7 @@ func completeRegister(request event) (response, error) {
 	if err != nil {
 		return response{
 			StatusCode: 500,
-			Body:       "Failed to delete temporary code",
+			Body:       "Failed to delete temporary code: " + err.Error(),
 		}, nil
 	}
 
@@ -172,7 +172,7 @@ func completeRegister(request event) (response, error) {
 	if err != nil {
 		return response{
 			StatusCode: 500,
-			Body:       "Failed to generate token",
+			Body:       "Failed to generate token " + err.Error(),
 		}, nil
 	}
 
