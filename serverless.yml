@@ -34,6 +34,14 @@ provider:
             - 'dynamodb:*'
           Resource:
             - ${self:custom.environment.DYNAMO_DB}
+        - Effect: 'Allow'
+          Action:
+            - 'ses:*'
+          Resource:
+            - '*'
+          Condition:
+            StringEquals:
+              ses:FromAddress: self:custom.environment.MAIL_SENDER
 
 custom:
   environment: ${file(./env.yml)}
