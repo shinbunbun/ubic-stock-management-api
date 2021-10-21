@@ -15,10 +15,10 @@ func SendMail(message, recipient, subject, sender string, isTest bool) error {
 		return err
 	}
 
-	_, err = svc.VerifyEmailAddress(&ses.VerifyEmailAddressInput{EmailAddress: aws.String(recipient)})
+	/* _, err = svc.VerifyEmailAddress(&ses.VerifyEmailAddressInput{EmailAddress: aws.String(recipient)})
 	if checkAwsError(err) != nil {
 		return err
-	}
+	} */
 
 	input := &ses.SendEmailInput{
 		Destination: &ses.Destination{
