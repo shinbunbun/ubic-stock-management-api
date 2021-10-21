@@ -24,8 +24,8 @@ func NewDynamoDBHandler() *DynamoDBHandler {
 	// DynamoDBHandlerを生成して返します
 	sess := GetDynamoDBSession()
 	conn := dynamo.New(sess, &aws.Config{
-		Region:   aws.String(config.AWSRegion()),
-		Endpoint: aws.String(config.DynamoDBEndpoint()),
+		Region: aws.String(config.AWSRegion()),
+		/* Endpoint: aws.String(config.DynamoDBEndpoint()), */
 	})
 	return &DynamoDBHandler{
 		conn: conn,
