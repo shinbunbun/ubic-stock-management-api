@@ -114,6 +114,24 @@ func (h *UbicFoodHandler) GetByID(id string) ([]UbicFoodWidget, error) {
 	return res, nil
 }
 
+func (h *UbicFoodHandler) GetByIDAndDataType(id, datatype string) (UbicFoodWidget, error) {
+	// IDとDataTypeが一致するデータを返します
+	table := h.table
+
+	var res UbicFoodWidget
+	err := table.Get("ID", id).
+		Range("DataType", dynamo.Equal, datatype).
+		One(&res)
+	switch err {
+	case dynamo.ErrNotFound:
+		return UbicFoodWidget{}, NotFoundError
+	case nil:
+	default:
+		return UbicFoodWidget{}, err
+	}
+	return res, nil
+}
+
 func (h *UbicFoodHandler) DeleteByID(id string) error {
 	// 同じIDを持つデータを消去します
 	table := h.table
