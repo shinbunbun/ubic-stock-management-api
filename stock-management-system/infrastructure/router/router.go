@@ -62,11 +62,19 @@ func findUserByID(request event) (response, error) {
 		}, nil
 	}
 	body, err := controller.FindUserByID(id)
-	if err != nil {
+
+	switch err {
+	case repositories.UserNotFoundErr:
+		return response{
+			StatusCode: 404,
+		}, nil
+	case nil:
+	case err:
 		return response{
 			StatusCode: 500,
 		}, err
 	}
+
 	return response{
 		Body:       body,
 		StatusCode: 200,
