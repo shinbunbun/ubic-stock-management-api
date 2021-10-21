@@ -72,4 +72,5 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           DYNAMO_DB: ${{ secrets.DYNAMO_DB }}
-          MAIL_SENDER: ${{ secrets.MAIL_SENDER }}  
+          MAIL_SENDER: ${{ secrets.MAIL_SENDER }}
+          SIGNINGKEY: ${{ secrets.SIGNINGKEY }} 
