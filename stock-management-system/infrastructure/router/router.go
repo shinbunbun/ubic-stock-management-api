@@ -47,6 +47,11 @@ func Router(request event) (response, error) {
 			"GET",
 			completeRegister,
 		},
+		{
+			"/login",
+			"GET",
+			login,
+		},
 	}
 	for _, route := range routes {
 		if route.url == url && route.method == method {
@@ -178,6 +183,51 @@ func completeRegister(request event) (response, error) {
 
 	return response{
 		Body:       token,
+		StatusCode: 200,
+	}, nil
+}
+
+func login(request event) (response, error) {
+	query := request.QueryStringParameters
+	email, ok := query["email"]
+	if !ok {
+		return response{
+			StatusCode: 400,
+		}, nil
+	}
+
+	if !mail.ValidEmailAddress(email) {
+		return response{
+			StatusCode: 400,
+			Body:       "invalid email address",
+		}, nil
+	}
+
+	codeRepository := &repositories.CodeRepository{
+		UbicFoodHandler: *database.NewDynamoDBHandler().NewUbicFoodHandler(),
+	}
+	code, err := codeRepository.AddCodeToDB(email)
+	if err != nil {
+		return response{
+			StatusCode: 500,
+			Body:       "Failed to register email address",
+		}, err
+	}
+
+	message := "以下のリンクへアクセスしてJWTを取得してください \n" + config.GetEndpointURL() + "/dev/complete-register?code=" + code
+	subject := "UBIC在庫管理システムログイン確認メール"
+	sender := config.SenderEmailAddress()
+	fmt.Println(message, email, subject, sender, false)
+	err = mail.SendMail(message, email, subject, sender, false)
+	if err != nil {
+		return response{
+			StatusCode: 500,
+			Body:       "Failed to send email",
+		}, err
+	}
+
+	return response{
+		Body:       "",
 		StatusCode: 200,
 	}, nil
 }
