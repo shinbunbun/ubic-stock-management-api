@@ -32,3 +32,7 @@ func SenderEmailAddress() string {
 func SignatureKey() string {
 	return os.Getenv("SIGNINGKEY")
 }
+
+func GetEndpointURL() string {
+	return os.Getenv("ENDPOINT_URL")
+}
