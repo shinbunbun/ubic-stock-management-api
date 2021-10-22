@@ -31,6 +31,10 @@ func (sr *StockRepositor) Delete(id string) error {
 	return sr.UbicFoodHandler.DeleteByID(id)
 }
 
+func (sr *StockRepositor) ChangeAmount(id string, amount int) error {
+	return sr.UbicFoodHandler.UpdateIntDataByWithoutMinus(id, "food-stock", amount)
+}
+
 func (sr *StockRepositor) Create(foodImage, makerName, productName string, amount int) (string, error) {
 	widgets := []database.UbicFoodWidget{
 		{
