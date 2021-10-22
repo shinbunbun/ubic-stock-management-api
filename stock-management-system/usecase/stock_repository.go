@@ -26,3 +26,7 @@ func (it *Interactor) CreateStock(image, makerName, productName string, amount i
 func (it *Interactor) DeleteStock(id string) error {
 	return it.StockRepository.Delete(id)
 }
+
+func (it *Interactor) FindStockLikeName(likeName string) ([]domain.Stock, error) {
+	return it.StockRepository.FindLike(likeName)
+}
