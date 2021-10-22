@@ -7,12 +7,6 @@ import (
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/repositories"
 )
 
-type userGetResponseData struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
-	Name  string `json:"name"`
-}
-
 func userGet(request event) (response, error) {
 	query := request.QueryStringParameters
 	id, ok := query["id"]
@@ -33,12 +27,7 @@ func userGet(request event) (response, error) {
 		}, nil
 	}
 
-	body := userGetResponseData{
-		ID:    user.ID,
-		Email: user.Email,
-		Name:  user.Name,
-	}
-	jsonBody, err := json.Marshal(body)
+	jsonBody, err := json.Marshal(user)
 	if err != nil {
 		return response{
 			StatusCode: 500,
