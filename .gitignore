@@ -74,3 +74,5 @@ bin
 node_modules
 .envrc.swp
 .envrc
+ecdsa-p521-private.pem
+ecdsa-p521-public.pem
