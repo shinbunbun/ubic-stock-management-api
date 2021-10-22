@@ -5,11 +5,11 @@ import (
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/database"
 )
 
-type StockRepositor struct {
+type StockRepository struct {
 	UbicFoodHandler *database.UbicFoodHandler
 }
 
-func (sr *StockRepositor) FindAll() ([]domain.Stock, error) {
+func (sr *StockRepository) FindAll() ([]domain.Stock, error) {
 	// 全てのStockを返します
 	widgets, err := sr.UbicFoodHandler.GetByDataKind("food")
 	if err != nil {
@@ -18,7 +18,7 @@ func (sr *StockRepositor) FindAll() ([]domain.Stock, error) {
 	return newStocks(widgets)
 }
 
-func (sr *StockRepositor) FindByID(id string) (domain.Stock, error) {
+func (sr *StockRepository) FindByID(id string) (domain.Stock, error) {
 	// IDのStockを返します
 	widgets, err := sr.UbicFoodHandler.GetByID(id)
 	if err != nil {
@@ -27,15 +27,15 @@ func (sr *StockRepositor) FindByID(id string) (domain.Stock, error) {
 	return newStock(widgets)
 }
 
-func (sr *StockRepositor) Delete(id string) error {
+func (sr *StockRepository) Delete(id string) error {
 	return sr.UbicFoodHandler.DeleteByID(id)
 }
 
-func (sr *StockRepositor) ChangeAmount(id string, amount int) error {
+func (sr *StockRepository) ChangeAmount(id string, amount int) error {
 	return sr.UbicFoodHandler.UpdateIntDataByWithoutMinus(id, "food-stock", amount)
 }
 
-func (sr *StockRepositor) Create(foodImage, makerName, productName string, amount int) (string, error) {
+func (sr *StockRepository) Create(foodImage, makerName, productName string, amount int) (string, error) {
 	widgets := []database.UbicFoodWidget{
 		{
 			Data:     foodImage,
@@ -61,7 +61,7 @@ func (sr *StockRepositor) Create(foodImage, makerName, productName string, amoun
 	return sr.UbicFoodHandler.AddMultipleItems(widgets)
 }
 
-func (sr *StockRepositor) FindLike(like string) ([]domain.Stock, error) {
+func (sr *StockRepository) FindLike(like string) ([]domain.Stock, error) {
 	idTable := make(map[string]bool)
 	{
 		widgets, err := sr.UbicFoodHandler.GetByDataLikeWithDataKindAndType(like, "food", "food-name")
