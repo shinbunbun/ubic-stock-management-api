@@ -31,3 +31,21 @@ func (c *Controller) Rent(stockID string, userID string) (int, string, error) {
 	}
 	return jsonDump(res)
 }
+
+func (c *Controller) GiveBack(stockID string) (int, string, error) {
+	err := c.Interactor.ChangeStockAmount(stockID, 1)
+	if err != nil {
+		return internalErrorMessage("Faield to give back")
+	}
+	err = c.Interactor.DeleteTransaction(stockID)
+	if err != nil {
+		for i := 0; i < 4; i++ {
+			err := c.Interactor.ChangeStockAmount(stockID, -1)
+			if err == nil {
+				return internalErrorMessage("Failed to give back")
+			}
+		}
+		panic("NOOOOOOOOOOOOOOOOOO")
+	}
+	return message("Successful give back!")
+}
