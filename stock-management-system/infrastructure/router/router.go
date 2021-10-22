@@ -28,10 +28,10 @@ func init() {
 	controller = controllers.NewController(db)
 }
 
-func verifyAPI(request event) error {
+func verifyAPI(request event) (token.JwtClaims, error) {
 	for _, v := range nonAuthEndpoints {
 		if v == request.Path {
-			return nil
+			return token.JwtClaims{}, nil
 		}
 	}
 
@@ -44,14 +44,15 @@ func verifyAPI(request event) error {
 
 	jwt := headers.Get("Authorization")
 	if jwt == "" {
-		return errors.New("authorization Header is not found")
+		return token.JwtClaims{}, errors.New("authorization Header is not found")
 	}
 
 	return token.VerifyToken(jwt)
 }
 
 func Router(request event) (response, error) {
-	err := verifyAPI(request)
+	// jwtはここで取得可能
+	_, err := verifyAPI(request)
 	if err != nil {
 		return response{
 			StatusCode: 401,

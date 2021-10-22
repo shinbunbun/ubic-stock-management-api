@@ -11,6 +11,12 @@ import (
 var prvKey []byte = []byte(config.PrivateKey())
 var pubKey []byte = []byte(config.PublicKey())
 
+type JwtClaims struct {
+	Email string `json:"email"`
+	Role  string `json:"role"`
+	jwt.StandardClaims
+}
+
 func GenerateToken(id, email string) (string, error) {
 	ecdsaKey, err := jwt.ParseECPrivateKeyFromPEM(prvKey)
 	if err != nil {
@@ -25,7 +31,7 @@ func GenerateToken(id, email string) (string, error) {
 	claims["iss"] = "ubic-food-stock-management-system"
 	claims["sub"] = id
 	claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
-	claims["iat"] = time.Now()
+	claims["iat"] = time.Now().Unix()
 	claims["email"] = email
 	claims["role"] = "user"
 
@@ -33,8 +39,8 @@ func GenerateToken(id, email string) (string, error) {
 	return token.SignedString(ecdsaKey)
 }
 
-func VerifyToken(tokenString string) error {
-	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+func VerifyToken(tokenString string) (JwtClaims, error) {
+	jwt, err := jwt.ParseWithClaims(tokenString, &JwtClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -47,5 +53,9 @@ func VerifyToken(tokenString string) error {
 		}
 		return ecdsaKey, nil
 	})
-	return err
+	if claims, ok := jwt.Claims.(*JwtClaims); ok && jwt.Valid {
+		return *claims, nil
+	} else {
+		return *claims, err
+	}
 }
