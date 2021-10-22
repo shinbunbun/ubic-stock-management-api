@@ -86,6 +86,11 @@ func Router(request event) (response, error) {
 			"GET",
 			login,
 		},
+		{
+			"/user",
+			"GET",
+			userGet,
+		},
 	}
 	for _, route := range routes {
 		if route.url == url && route.method == method {
