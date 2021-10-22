@@ -36,3 +36,7 @@ func SignatureKey() string {
 func GetEndpointURL() string {
 	return os.Getenv("ENDPOINT_URL")
 }
+
+func GetS3BucketName() string {
+	return os.Getenv("S3_BUCKET")
+}

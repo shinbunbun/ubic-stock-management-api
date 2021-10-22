@@ -42,6 +42,11 @@ provider:
           Condition:
             StringEquals:
               ses:FromAddress: ${self:custom.environment.MAIL_SENDER}
+        - Effect: 'Allow'
+          Action:
+            - 's3:*'
+          Resource:
+            - ${self:custom.environment.S3_BUCKET}
 
 custom:
   environment: ${file(./env.yml)}
