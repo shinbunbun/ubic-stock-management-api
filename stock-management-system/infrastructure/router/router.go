@@ -1,7 +1,9 @@
 package router
 
 import (
+	"errors"
 	"fmt"
+	"net/http"
 
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/config"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/controllers"
@@ -16,6 +18,8 @@ var (
 	controller *controllers.Controller
 )
 
+var nonAuthEndpoints []string = []string{"/register", "/login", "/token"}
+
 type response events.APIGatewayProxyResponse
 type event events.APIGatewayProxyRequest
 
@@ -24,7 +28,37 @@ func init() {
 	controller = controllers.NewController(db)
 }
 
+func verifyAPI(request event) error {
+	for _, v := range nonAuthEndpoints {
+		if v == request.Path {
+			return nil
+		}
+	}
+
+	headers := http.Header{}
+	for header, values := range request.MultiValueHeaders {
+		for _, value := range values {
+			headers.Add(header, value)
+		}
+	}
+
+	jwt := headers.Get("Authorization")
+	if jwt == "" {
+		return errors.New("authorization Header is not found")
+	}
+
+	return token.VerifyToken(jwt)
+}
+
 func Router(request event) (response, error) {
+	err := verifyAPI(request)
+	if err != nil {
+		return response{
+			StatusCode: 401,
+			Body:       "AuthN failed: " + err.Error(),
+		}, nil
+	}
+
 	url := request.Path
 	method := request.HTTPMethod
 	routes := []struct {
