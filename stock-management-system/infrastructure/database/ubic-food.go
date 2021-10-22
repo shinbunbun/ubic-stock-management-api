@@ -102,6 +102,15 @@ func (h *UbicFoodHandler) UpdateIntDataBy(id, dataType string, add int) error {
 		Run()
 }
 
+func (h *UbicFoodHandler) UpdateIntDataByWithoutMinus(id string, dataType string, add int) error {
+	table := h.table
+	return table.Update("ID", id).
+		Range("DataType", dataType).
+		Add("IntData", add).
+		If("$ >= ?", "IntData", -add).
+		Run()
+}
+
 func (h *UbicFoodHandler) GetByID(id string) ([]UbicFoodWidget, error) {
 	// IDの値から一致するデータのリストを返します
 	table := h.table
