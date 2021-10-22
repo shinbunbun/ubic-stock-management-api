@@ -17,6 +17,14 @@ func (sr *StockRepositor) FindAll() ([]domain.Stock, error) {
 	return newStocks(widgets)
 }
 
+func (sr *StockRepositor) FindByID(id string) (domain.Stock, error) {
+	widgets, err := sr.UbicFoodHandler.GetByID(id)
+	if err != nil {
+		return domain.Stock{}, err
+	}
+	return newStock(widgets)
+}
+
 func newStocks(widgets []database.UbicFoodWidget) ([]domain.Stock, error) {
 	table := make(map[string][]database.UbicFoodWidget)
 	for _, widget := range widgets {
