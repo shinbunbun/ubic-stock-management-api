@@ -131,6 +131,21 @@ func (h *UbicFoodHandler) GetByMultipleIDs(ids []string) ([]UbicFoodWidget, erro
 	return res, nil
 }
 
+func (h *UbicFoodHandler) GetByDataLikeWithDataKindAndType(like string, dataKind string, dataType string) ([]UbicFoodWidget, error) {
+	table := h.table
+
+	var res []UbicFoodWidget
+	err := table.Get("DataKind", dataKind).
+		Filter("$ = ?", "DataType", dataType).
+		Filter("$ = ?", "DataKind", dataKind).
+		Filter("contains($, ?)", "Data", like).
+		All(&res)
+	if err != nil {
+		return []UbicFoodWidget{}, err
+	}
+	return res, nil
+}
+
 func (h *UbicFoodHandler) GetByIDAndDataType(id, datatype string) (UbicFoodWidget, error) {
 	// IDとDataTypeが一致するデータを返します
 	table := h.table
