@@ -5,9 +5,10 @@ import (
 
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/database"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/repositories"
+	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/token"
 )
 
-func userGet(request event) (response, error) {
+func userGet(request event, jwt token.JwtClaims) (response, error) {
 	query := request.QueryStringParameters
 	id, ok := query["id"]
 	if !ok {

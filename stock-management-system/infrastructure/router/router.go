@@ -52,7 +52,7 @@ func verifyAPI(request event) (token.JwtClaims, error) {
 
 func Router(request event) (response, error) {
 	// jwtはここで取得可能
-	_, err := verifyAPI(request)
+	jwt, err := verifyAPI(request)
 	if err != nil {
 		return response{
 			StatusCode: 401,
@@ -65,7 +65,7 @@ func Router(request event) (response, error) {
 	routes := []struct {
 		url      string
 		method   string
-		function func(event) (response, error)
+		function func(event, token.JwtClaims) (response, error)
 	}{
 		{
 			"/user",
@@ -95,7 +95,7 @@ func Router(request event) (response, error) {
 	}
 	for _, route := range routes {
 		if route.url == url && route.method == method {
-			return route.function(request)
+			return route.function(request, jwt)
 		}
 	}
 
@@ -104,14 +104,8 @@ func Router(request event) (response, error) {
 	}, nil
 }
 
-func findUserByID(request event) (response, error) {
-	query := request.QueryStringParameters
-	id, ok := query["id"]
-	if !ok {
-		return response{
-			StatusCode: 400,
-		}, nil
-	}
+func findUserByID(request event, jwt token.JwtClaims) (response, error) {
+	id := jwt.Subject
 	status, body, err := controller.FindUserByID(id)
 
 	return response{
@@ -120,7 +114,7 @@ func findUserByID(request event) (response, error) {
 	}, err
 }
 
-func register(request event) (response, error) {
+func register(request event, jwt token.JwtClaims) (response, error) {
 	query := request.QueryStringParameters
 	email, ok := query["email"]
 	if !ok {
@@ -165,7 +159,7 @@ func register(request event) (response, error) {
 	}, nil
 }
 
-func tokenEndPoint(request event) (response, error) {
+func tokenEndPoint(request event, jwt token.JwtClaims) (response, error) {
 	query := request.QueryStringParameters
 	code, ok := query["code"]
 	if !ok {
@@ -218,7 +212,7 @@ func tokenEndPoint(request event) (response, error) {
 	}, nil
 }
 
-func login(request event) (response, error) {
+func login(request event, jwt token.JwtClaims) (response, error) {
 	query := request.QueryStringParameters
 	email, ok := query["email"]
 	if !ok {
