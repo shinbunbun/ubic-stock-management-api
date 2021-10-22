@@ -115,6 +115,7 @@ func (h *UbicFoodHandler) GetByID(id string) ([]UbicFoodWidget, error) {
 }
 
 func (h *UbicFoodHandler) GetByMultipleIDs(ids []string) ([]UbicFoodWidget, error) {
+	// id <- ids についてIDがidであるデータ全てを返します。
 	table := h.table
 	var keys []dynamo.Keyed
 	for _, id := range ids {
