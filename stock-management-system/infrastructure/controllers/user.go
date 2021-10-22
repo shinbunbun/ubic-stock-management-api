@@ -7,21 +7,12 @@ import (
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/domain"
 )
 
-func (c *Controller) FindUserByID(id string) (string, error) {
+func (c *Controller) FindUserByID(id string) (int, string, error) {
 	user, err := c.Interactor.FindUserByID(id)
 	if err != nil {
-		return "", err
+		return internalErrorMessage("Failed to found user")
 	}
-
-	byte, err := json.Marshal(user)
-	var buf bytes.Buffer
-
-	json.HTMLEscape(&buf, byte)
-
-	if err != nil {
-		return "", err
-	}
-	return buf.String(), nil
+	return jsonDump(user)
 }
 
 func (c *Controller) FindUserByEmail(id string) (string, error) {

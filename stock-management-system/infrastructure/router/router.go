@@ -111,24 +111,12 @@ func findUserByID(request event) (response, error) {
 			StatusCode: 400,
 		}, nil
 	}
-	body, err := controller.FindUserByID(id)
-
-	switch err {
-	case repositories.UserNotFoundErr:
-		return response{
-			StatusCode: 404,
-		}, nil
-	case nil:
-	case err:
-		return response{
-			StatusCode: 500,
-		}, err
-	}
+	status, body, err := controller.FindUserByID(id)
 
 	return response{
+		StatusCode: status,
 		Body:       body,
-		StatusCode: 200,
-	}, nil
+	}, err
 }
 
 func register(request event) (response, error) {
