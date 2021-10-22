@@ -10,4 +10,5 @@ const (
 	AlreadyExistsErr       = RepositoryError("Can't make user because the email was already used")
 	UserNotFoundErr        = RepositoryError("There are no corresond user")
 	TransactionNotFoundErr = RepositoryError("There are no corresond transaction")
+	StockNotFoundErr       = RepositoryError("There are no corresond stock")
 )
