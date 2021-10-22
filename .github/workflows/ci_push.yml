@@ -41,6 +41,8 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: hoge
           AWS_SECRET_ACCESS_KEY: hoge
+          PUBLIC_KEY: ${{secrets.PUBLIC_KEY}}
+          SIGNINGKEY: ${{ secrets.SIGNINGKEY }}
 
   go-lint:
     needs: setup-go
