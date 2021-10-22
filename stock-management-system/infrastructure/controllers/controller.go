@@ -47,7 +47,7 @@ func NewControllerWithTableName(db *database.DynamoDBHandler, tableName string) 
 	}
 }
 
-func jsonDump(body interface{}) (int, string, error) {
+func jsonDumpWithStatusCode(code int, body interface{}) (int, string, error) {
 	byte, err := json.Marshal(body)
 
 	if err != nil {
@@ -57,11 +57,25 @@ func jsonDump(body interface{}) (int, string, error) {
 	var buf bytes.Buffer
 	json.HTMLEscape(&buf, byte)
 
-	return 200, buf.String(), nil
+	return code, buf.String(), nil
+}
+
+func jsonDump(body interface{}) (int, string, error) {
+	return jsonDumpWithStatusCode(200, body)
+}
+
+func messageWithStatusCode(code int, m string) (int, string, error) {
+	return jsonDumpWithStatusCode(code,
+		map[string]string{
+			"message": m,
+		},
+	)
 }
 
 func message(m string) (int, string, error) {
-	return jsonDump(map[string]string{
-		"message": m,
-	})
+	return messageWithStatusCode(200, m)
+}
+
+func internalErrorMessage(m string) (int, string, error) {
+	return messageWithStatusCode(404, m)
 }
