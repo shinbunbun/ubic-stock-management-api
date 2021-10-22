@@ -1,6 +1,7 @@
 package token
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -31,10 +32,11 @@ func TestGenerateToken(t *testing.T) {
 				t.Errorf("GenerateToken() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			err = VerifyToken(got)
+			jwt, err := VerifyToken(got)
 			if err != nil {
 				t.Errorf("GenerateToken() = %v, Verify failed with %v", got, err)
 			}
+			fmt.Printf("%#v\n", jwt)
 		})
 	}
 }
