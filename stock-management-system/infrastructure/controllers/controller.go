@@ -59,3 +59,9 @@ func jsonDump(body interface{}) (int, string, error) {
 
 	return 200, buf.String(), nil
 }
+
+func message(m string) (int, string, error) {
+	return jsonDump(map[string]string{
+		"message": m,
+	})
+}

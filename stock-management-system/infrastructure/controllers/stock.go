@@ -13,7 +13,7 @@ func (c *Controller) ChangeStockAmount(id string, add int) (int, string, error) 
 	if err != nil {
 		return 404, "Failed to change amount", nil
 	}
-	return jsonDump(map[string]string{"message": "successful change!"})
+	return message("successful change amount!")
 }
 
 func (c *Controller) DeleteStock(id string) (int, string, error) {
@@ -21,5 +21,5 @@ func (c *Controller) DeleteStock(id string) (int, string, error) {
 	if err != nil {
 		return 404, "Failed to delete stock", nil
 	}
-	return jsonDump(map[string]string{"message": "successful delete!"})
+	return message("successful delete stock!")
 }
