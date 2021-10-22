@@ -102,12 +102,53 @@ func (h *UbicFoodHandler) UpdateIntDataBy(id, dataType string, add int) error {
 		Run()
 }
 
+func (h *UbicFoodHandler) UpdateIntDataByWithoutMinus(id string, dataType string, add int) error {
+	table := h.table
+	return table.Update("ID", id).
+		Range("DataType", dataType).
+		Add("IntData", add).
+		If("$ >= ?", "IntData", -add).
+		Run()
+}
+
 func (h *UbicFoodHandler) GetByID(id string) ([]UbicFoodWidget, error) {
 	// IDの値から一致するデータのリストを返します
 	table := h.table
 
 	var res []UbicFoodWidget
 	err := table.Get("ID", id).All(&res)
+	if err != nil {
+		return []UbicFoodWidget{}, err
+	}
+	return res, nil
+}
+
+func (h *UbicFoodHandler) GetByMultipleIDs(ids []string) ([]UbicFoodWidget, error) {
+	// id <- ids についてIDがidであるデータ全てを返します。
+	table := h.table
+	var keys []dynamo.Keyed
+	for _, id := range ids {
+		keys = append(keys, dynamo.Keys{id})
+	}
+	var res []UbicFoodWidget
+	err := table.Batch("ID").
+		Get(keys...).
+		All(&res)
+	if err != nil {
+		return []UbicFoodWidget{}, err
+	}
+	return res, nil
+}
+
+func (h *UbicFoodHandler) GetByDataLikeWithDataKindAndType(like string, dataKind string, dataType string) ([]UbicFoodWidget, error) {
+	table := h.table
+
+	var res []UbicFoodWidget
+	err := table.Get("DataKind", dataKind).
+		Filter("$ = ?", "DataType", dataType).
+		Filter("$ = ?", "DataKind", dataKind).
+		Filter("contains($, ?)", "Data", like).
+		All(&res)
 	if err != nil {
 		return []UbicFoodWidget{}, err
 	}
