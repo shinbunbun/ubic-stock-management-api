@@ -61,6 +61,28 @@ func (sr *StockRepositor) Create(foodImage, makerName, productName string, amoun
 	return sr.UbicFoodHandler.AddMultipleItems(widgets)
 }
 
+func (sr *StockRepositor) FindLike(like string) ([]domain.Stock, error) {
+	idTable := make(map[string]bool)
+	{
+		widgets, err := sr.UbicFoodHandler.GetByDataLikeWithDataKindAndType(like, "food", "food-name")
+		if err != nil {
+			return []domain.Stock{}, err
+		}
+		for _, widget := range widgets {
+			idTable[widget.ID] = true
+		}
+	}
+	var ids []string
+	for id := range idTable {
+		ids = append(ids, id)
+	}
+	widgets, err := sr.UbicFoodHandler.GetByMultipleIDs(ids)
+	if err != nil {
+		return []domain.Stock{}, err
+	}
+	return newStocks(widgets)
+}
+
 func newStocks(widgets []database.UbicFoodWidget) ([]domain.Stock, error) {
 	table := make(map[string][]database.UbicFoodWidget)
 	for _, widget := range widgets {
