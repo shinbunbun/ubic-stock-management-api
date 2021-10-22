@@ -32,10 +32,17 @@ func NewController(db *database.DynamoDBHandler) *Controller {
 }
 
 func NewControllerWithTableName(db *database.DynamoDBHandler, tableName string) *Controller {
+	handler := db.NewUbicFoodHandlerWithTableName(tableName)
 	return &Controller{
 		Interactor: &usecase.Interactor{
 			UserRepository: &repositories.UserRepository{
-				UbicFoodHandler: db.NewUbicFoodHandlerWithTableName(tableName),
+				UbicFoodHandler: handler,
+			},
+			StockRepository: &repositories.StockRepository{
+				UbicFoodHandler: handler,
+			},
+			TransactionRepository: &repositories.TransactionRepository{
+				UbicFoodHandler: handler,
 			},
 		},
 	}
