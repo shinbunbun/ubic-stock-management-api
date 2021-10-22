@@ -49,3 +49,11 @@ func (c *Controller) GiveBack(stockID string) (int, string, error) {
 	}
 	return message("Successful give back!")
 }
+
+func (c *Controller) GetAllTransactions(userID string) (int, string, error) {
+	transactions, err := c.Interactor.FindTransactionsByUserID(userID)
+	if err != nil {
+		return internalErrorMessage("Failed to get transactions")
+	}
+	return jsonDump(transactions)
+}
