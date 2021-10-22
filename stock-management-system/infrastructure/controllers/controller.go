@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"bytes"
+	"encoding/json"
+
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/database"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/repositories"
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/usecase"
@@ -42,4 +45,17 @@ func NewControllerWithTableName(db *database.DynamoDBHandler, tableName string) 
 			},
 		},
 	}
+}
+
+func jsonDump(body interface{}) (int, string, error) {
+	byte, err := json.Marshal(body)
+
+	if err != nil {
+		return 404, "json dump error", nil
+	}
+
+	var buf bytes.Buffer
+	json.HTMLEscape(&buf, byte)
+
+	return 200, buf.String(), nil
 }
