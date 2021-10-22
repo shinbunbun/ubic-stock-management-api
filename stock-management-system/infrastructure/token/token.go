@@ -5,16 +5,20 @@ import (
 	"time"
 
 	"github.com/Yuto/ubic-stock-management-api/stock-management-system/infrastructure/config"
-
-	jwt "github.com/form3tech-oss/jwt-go"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
-var prvKey []byte = []byte(config.SignatureKey())
+var prvKey []byte = []byte(config.PrivateKey())
+var pubKey []byte = []byte(config.PublicKey())
 
 func GenerateToken(id, email string) (string, error) {
+	ecdsaKey, err := jwt.ParseECPrivateKeyFromPEM(prvKey)
+	if err != nil {
+		return "", err
+	}
 
 	// headerのセット
-	token := jwt.New(jwt.SigningMethodHS256)
+	token := jwt.New(jwt.SigningMethodES512)
 
 	// claimsのセット
 	claims := token.Claims.(jwt.MapClaims)
@@ -26,18 +30,22 @@ func GenerateToken(id, email string) (string, error) {
 	claims["role"] = "user"
 
 	// 電子署名
-	return token.SignedString(prvKey)
+	return token.SignedString(ecdsaKey)
 }
 
 func VerifyToken(tokenString string) error {
 	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+		if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return prvKey, nil
+		ecdsaKey, err := jwt.ParseECPublicKeyFromPEM(pubKey)
+		if err != nil {
+			return "", err
+		}
+		return ecdsaKey, nil
 	})
 	return err
 }
