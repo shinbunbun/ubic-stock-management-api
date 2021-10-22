@@ -6,6 +6,7 @@ require (
 	github.com/auth0/go-jwt-middleware v1.0.1 // indirect
 	github.com/aws/aws-lambda-go v1.27.0
 	github.com/aws/aws-sdk-go v1.38.0
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/fnproject/fdk-go v0.0.9
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible // indirect
 	github.com/google/uuid v1.3.0

@@ -2,7 +2,6 @@ package token
 
 import (
 	"testing"
-	"time"
 )
 
 func TestGenerateToken(t *testing.T) {
@@ -32,12 +31,10 @@ func TestGenerateToken(t *testing.T) {
 				t.Errorf("GenerateToken() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			time.AfterFunc(1*time.Millisecond, func() {
-				err = VerifyToken(got)
-				if err != nil {
-					t.Errorf("GenerateToken() = %v, Verify failed with %v", got, err)
-				}
-			})
+			err = VerifyToken(got)
+			if err != nil {
+				t.Errorf("GenerateToken() = %v, Verify failed with %v", got, err)
+			}
 		})
 	}
 }
