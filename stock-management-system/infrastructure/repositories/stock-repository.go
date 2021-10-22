@@ -10,6 +10,7 @@ type StockRepositor struct {
 }
 
 func (sr *StockRepositor) FindAll() ([]domain.Stock, error) {
+	// 全てのStockを返します
 	widgets, err := sr.UbicFoodHandler.GetByDataKind("food")
 	if err != nil {
 		return []domain.Stock{}, err
@@ -18,6 +19,7 @@ func (sr *StockRepositor) FindAll() ([]domain.Stock, error) {
 }
 
 func (sr *StockRepositor) FindByID(id string) (domain.Stock, error) {
+	// IDのStockを返します
 	widgets, err := sr.UbicFoodHandler.GetByID(id)
 	if err != nil {
 		return domain.Stock{}, err
