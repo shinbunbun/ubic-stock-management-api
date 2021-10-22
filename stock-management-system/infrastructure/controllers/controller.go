@@ -15,10 +15,17 @@ type Controller struct {
 }
 
 func NewController(db *database.DynamoDBHandler) *Controller {
+	handler := db.NewUbicFoodHandler()
 	return &Controller{
 		Interactor: &usecase.Interactor{
 			UserRepository: &repositories.UserRepository{
-				UbicFoodHandler: db.NewUbicFoodHandler(),
+				UbicFoodHandler: handler,
+			},
+			StockRepository: &repositories.StockRepository{
+				UbicFoodHandler: handler,
+			},
+			TransactionRepository: &repositories.TransactionRepository{
+				UbicFoodHandler: handler,
 			},
 		},
 	}
