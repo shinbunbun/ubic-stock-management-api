@@ -114,6 +114,22 @@ func (h *UbicFoodHandler) GetByID(id string) ([]UbicFoodWidget, error) {
 	return res, nil
 }
 
+func (h *UbicFoodHandler) GetByMultipleIDs(ids []string) ([]UbicFoodWidget, error) {
+	table := h.table
+	var keys []dynamo.Keyed
+	for _, id := range ids {
+		keys = append(keys, dynamo.Keys{id})
+	}
+	var res []UbicFoodWidget
+	err := table.Batch("ID").
+		Get(keys...).
+		All(&res)
+	if err != nil {
+		return []UbicFoodWidget{}, err
+	}
+	return res, nil
+}
+
 func (h *UbicFoodHandler) GetByIDAndDataType(id, datatype string) (UbicFoodWidget, error) {
 	// IDとDataTypeが一致するデータを返します
 	table := h.table
