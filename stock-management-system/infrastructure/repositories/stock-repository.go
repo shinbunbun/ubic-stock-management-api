@@ -27,6 +27,36 @@ func (sr *StockRepositor) FindByID(id string) (domain.Stock, error) {
 	return newStock(widgets)
 }
 
+func (sr *StockRepositor) Delete(id string) error {
+	return sr.UbicFoodHandler.DeleteByID(id)
+}
+
+func (sr *StockRepositor) Create(foodImage, makerName, productName string, amount int) (string, error) {
+	widgets := []database.UbicFoodWidget{
+		{
+			Data:     foodImage,
+			DataType: "food-image",
+			DataKind: "food",
+		},
+		{
+			Data:     makerName,
+			DataType: "food-maker",
+			DataKind: "food",
+		},
+		{
+			Data:     productName,
+			DataType: "food-name",
+			DataKind: "food",
+		},
+		{
+			DataType: "food-stock",
+			DataKind: "food",
+			IntData:  amount,
+		},
+	}
+	return sr.UbicFoodHandler.AddMultipleItems(widgets)
+}
+
 func newStocks(widgets []database.UbicFoodWidget) ([]domain.Stock, error) {
 	table := make(map[string][]database.UbicFoodWidget)
 	for _, widget := range widgets {
