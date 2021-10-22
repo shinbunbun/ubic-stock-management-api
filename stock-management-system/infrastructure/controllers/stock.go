@@ -23,3 +23,11 @@ func (c *Controller) DeleteStock(id string) (int, string, error) {
 	}
 	return message("successful delete stock!")
 }
+
+func (c *Controller) FindStockLikeName(likeName string) (int, string, error) {
+	stocks, err := c.Interactor.FindStockLikeName(likeName)
+	if err != nil {
+		return internalErrorMessage("Failed to get stocks")
+	}
+	return jsonDump(stocks)
+}
