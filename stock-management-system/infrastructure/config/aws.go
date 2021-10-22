@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 func AWSRegion() string {
 	// Regionの値を返す関数
@@ -29,8 +32,12 @@ func SenderEmailAddress() string {
 	return os.Getenv("MAIL_SENDER")
 }
 
-func SignatureKey() string {
-	return os.Getenv("SIGNINGKEY")
+func PrivateKey() string {
+	return strings.Replace(os.Getenv("SIGNINGKEY"), "\\n", "\n", -1)
+}
+
+func PublicKey() string {
+	return strings.Replace(os.Getenv("PUBLIC_KEY"), "\\n", "\n", -1)
 }
 
 func GetEndpointURL() string {
