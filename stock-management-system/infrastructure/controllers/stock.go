@@ -15,3 +15,11 @@ func (c *Controller) ChangeStockAmount(id string, add int) (int, string, error) 
 	}
 	return jsonDump(map[string]string{"message": "successful change!"})
 }
+
+func (c *Controller) DeleteStock(id string) (int, string, error) {
+	err := c.Interactor.DeleteStock(id)
+	if err != nil {
+		return 404, "Failed to delete stock", nil
+	}
+	return jsonDump(map[string]string{"message": "successful delete!"})
+}
